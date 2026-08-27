@@ -1,0 +1,39 @@
+{
+  "name": "cut-house",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "typegen": "sanity schema extract --path=src/sanity/extract.json --force && sanity typegen generate",
+    "seed": "node --env-file=.env.local scripts/seed.ts"
+  },
+  "dependencies": {
+    "@mux/mux-player-react": "^3.13.2",
+    "@sanity/client": "^7.26.2",
+    "@sanity/icons": "^5.2.1",
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/vision": "^6.10.1",
+    "next": "16.3.1",
+    "next-sanity": "^13.3.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "sanity": "^6.10.1",
+    "sanity-plugin-mux-input": "^5.0.11",
+    "server-only": "^0.0.1",
+    "styled-components": "^6.5.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.1",
+    "tailwindcss": "^4",
+    "typescript": "^6.0.3"
+  }
+}
