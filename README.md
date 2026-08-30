@@ -1,209 +1,230 @@
 # cut house
 
-Portfolio site for cut house. Next.js 16 App Router, Sanity for content, Mux for
-video, deployed on Vercel. The Studio is embedded at `/studio`, so there is one
-repo, one deploy, one domain and one set of environment variables.
+Portfolio site for cut house. Next.js 16, Sanity for content, Mux for video,
+deployed on Vercel. The editing Studio is built in at `/studio`, so there is one
+repo, one deploy, one domain.
 
-Requires **Node 24 LTS**. Node 23 is odd-numbered and outside the engine range of
-several transitive dependencies — it installs with warnings and Vercel will not
-offer it. There is an `.nvmrc`; run `nvm use`.
+**The code is done — everything below is setup.**
+
+| | |
+| --- | --- |
+| Repository | `tylenn/cut-house` |
+| Sanity project | `mpliyuvs` |
+| Dataset | `production` |
+| Node | 24.x |
+
+You already have GitHub, Vercel and this repository. The Sanity project exists
+and you have been invited to it. The only account still to open is **Mux**, which
+handles video encoding and streaming.
+
+---
+
+## A. Get into Sanity
+
+Sanity is where all the writing, films and credits live. An invite has gone to
+**info@tylen.ca** — accept it, then check you can open the project at
+[sanity.io/manage](https://sanity.io/manage).
+
+Nothing to add yet. Content comes last, once the site is deployed and Mux is
+connected.
+
+---
+
+## B. Deploy to Vercel
+
+About ten minutes. **The build fails if the settings are not in first**, so add
+them before you press deploy.
+
+### 1. Import the repository
+
+vercel.com → Add New → Project → pick `cut-house`.
+
+Leave the framework preset and build command exactly as detected — Vercel
+recognises Next.js on its own. Do not deploy yet.
+
+### 2. Set Node to 24.x
+
+Settings → General → Node.js Version. Several dependencies will not install
+cleanly on anything older.
+
+### 3. Add the three settings
+
+Settings → Environment Variables. Add each to all three environments —
+Production, Preview and Development.
+
+```
+NEXT_PUBLIC_SANITY_PROJECT_ID     mpliyuvs
+NEXT_PUBLIC_SANITY_DATASET        production
+NEXT_PUBLIC_SANITY_API_VERSION    2026-01-01
+```
+
+> **Paste these without quotation marks.** Type `mpliyuvs`, not `"mpliyuvs"`.
+> Vercel treats a value literally, so quotation marks become part of it and every
+> page fails to find the project. This is the most common way the setup goes
+> wrong.
+
+None of these three are secret. They identify a public dataset and nothing more,
+so there is no risk in them travelling over email or a message.
+
+### 4. Deploy
+
+Two or three minutes. You will get a `.vercel.app` address.
+
+**Expect an empty grid.** Nothing has been published yet, so a working site with
+no films in it is the correct result at this stage — not a failure.
+
+---
+
+## C. Point your domain at it
+
+### 1. Add the domain in Vercel
+
+Project → Settings → Domains. Enter the domain, then follow the DNS records
+Vercel gives you at your registrar. Propagation is usually minutes, occasionally
+a few hours.
+
+### 2. Tell Sanity about the domain
+
+sanity.io/manage → API → CORS Origins. Add the live domain with **credentials
+allowed** ticked.
+
+> **This one fails silently.** Skip it and the public site still works perfectly
+> — only the editing interface breaks, with a generic network error that never
+> mentions the real cause. If editing ever stops working after a domain change,
+> check here first.
+
+### 3. Set the site address — optional
+
+Add `NEXT_PUBLIC_SITE_URL` as your domain with no trailing slash, e.g.
+`https://cuthouse.ca`. It only affects link previews and the sitemap, and falls
+back to the Vercel address on its own, so it can wait.
+
+---
+
+## D. Connect Mux
+
+Mux does the encoding and streaming. One upload gives you the poster frame, the
+looping grid preview, the aspect ratio and the duration automatically — there is
+nothing to prepare beforehand.
+
+### 1. Create the account and a token
+
+mux.com → Settings → Access Tokens.
+
+- Sign up and add a payment method. Mux bills by usage — encoding, storage and
+  streaming.
+- Create an access token with **Mux Video** read and write permissions.
+- You will be shown a **token ID** and a **secret key**. The secret is displayed
+  once and never again — save it to a password manager straight away.
+
+### 2. Paste them into the Studio
+
+Open `yourdomain.com/studio`, create or open any project, find the **Film** field
+and click the settings icon on the Mux input. Paste the token ID and secret key.
+
+Mux credentials are **not** environment variables and do not belong in Vercel.
+They are stored inside the Sanity project, and you only do this once for
+everything.
+
+---
+
+## E. Add the work
+
+Everything from here happens at `yourdomain.com/studio`. Only a title and a URL
+are ever required — a project can go up today with just a film and a name, and be
+filled in months later.
+
+### Site settings and the information page
+
+Both are pinned in the Studio sidebar. Site settings holds the name, tagline,
+email and social links. The information page holds your write-up and the client
+list.
+
+Your bio, ready to paste into the information page's **About** field. Edit it
+freely — it is not fixed anywhere in the code:
+
+> With the ability to execute distinctive projects, Tylen's work has led him to
+> collaborate with global brands such as Sony, Salomon, Turo and more. Having
+> majored in design, his creative practice is deeply informed by the arts,
+> bringing a unique approach to every project.
+
+### Each project
+
+| Field | What it does |
+| --- | --- |
+| **Title** | Required. Shown on the grid and the project page. |
+| **URL** | Required. Press Generate — it fills from the title. |
+| **Film** | The main video. Upload once; Mux does the rest. |
+| **My role** | Your role — Director, Editor, DP. Shows in grey under the grid title, and at the top of the credits. |
+| **Collaborators** | Everyone else. Role, name, and an optional link to their site. |
+| **More films** | Cutdowns, alternates, behind the scenes. Run under the credits, two across on desktop. |
+| **Client** | Leave blank for personal work. |
+| **Date** | Drives the displayed year and the grid order. |
+| **Still frame** | Optional. Overrides the frame Mux picks. |
+| **Hover preview** | Optional. Overrides the looping preview on the grid. |
+| **Stills** | A gallery, each with alt text and a caption. |
+| **Write-up** | Long-form text for the project page. |
+| **Position** | Optional. Manual grid order; blank falls back to newest first. |
+| **Hide from the grid** | Drops it from the index while its link keeps working. |
+
+Nothing is public until you press **Publish**. Published changes appear on the
+site within a few minutes.
+
+---
+
+## Every setting, in one place
+
+| Name | Value | Needed? | Secret? |
+| --- | --- | --- | --- |
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | `mpliyuvs` | Required | No |
+| `NEXT_PUBLIC_SANITY_DATASET` | `production` | Required | No |
+| `NEXT_PUBLIC_SANITY_API_VERSION` | `2026-01-01` | Required | No |
+| `NEXT_PUBLIC_SITE_URL` | Your domain, no trailing slash. Falls back on its own. | Optional | No |
+| `SANITY_API_READ_TOKEN` | Only to preview unpublished drafts on the live site. | Optional | **Yes** |
+| `SANITY_REVALIDATE_SECRET` | Only to make a publish appear instantly rather than shortly after. | Optional | **Yes** |
+| `SANITY_API_WRITE_TOKEN` | Developer machines only. It can delete all of your content. | **Never add** | **Yes** |
+
+> **The one hard rule.** Never put `SANITY_API_WRITE_TOKEN` into Vercel. It has
+> full edit and delete rights over your content, and the live site has no use
+> for it.
+
+---
+
+## Confirm it worked
+
+- [ ] The Vercel build finishes green.
+- [ ] Your domain loads the site over https.
+- [ ] `/studio` opens and lists the document types without a network error.
+- [ ] A video uploads to the Film field and shows a thumbnail once processing finishes.
+- [ ] Publishing a project makes it appear on the homepage.
+
+---
+
+## If it breaks
+
+| What you see | What's wrong |
+| --- | --- |
+| Build fails: `Dataset not found` | The project ID is missing, mistyped, or was pasted with quotation marks around it. |
+| Build fails: `Missing environment variable…` | One of the three required settings is absent, or was not applied to the Production environment. |
+| Site works, but `/studio` shows a network error | The domain is missing from CORS Origins, or was added without credentials allowed. |
+| Every page fails after it had been working | The dataset was switched to private. Set it back to public. |
+| No Mux settings icon, or uploads fail | The Mux token lacks Mux Video write permission, or was never entered in the Studio. |
+| A published change has not appeared | Normal. Give it a few minutes. |
+| Homepage says nothing is published | Correct when the dataset is empty, or when everything in it is still a draft. |
+
+---
+
+## Working on the code
+
+Requires **Node 24 LTS**. There is an `.nvmrc`.
 
 ```bash
 nvm use
 npm install
-cp .env.example .env.local   # then fill it in, see below
+cp .env.example .env.local   # then fill in the project ID
 npm run typegen
 npm run dev
 ```
-
----
-
-## First-time setup
-
-### 1. Create the Sanity project
-
-1. Sign up at [sanity.io/manage](https://sanity.io/manage) and create a project.
-2. Create a dataset called `production` (public is fine — the site reads it
-   anonymously).
-3. Copy the project ID into `NEXT_PUBLIC_SANITY_PROJECT_ID` in `.env.local`.
-
-### 2. Create two API tokens
-
-Under **Manage → API → Tokens**. They are deliberately different roles:
-
-| Env var | Role | Used by | Deployed? |
-| --- | --- | --- | --- |
-| `SANITY_API_READ_TOKEN` | **Viewer** | Draft previews, Live Content API | Yes |
-| `SANITY_API_WRITE_TOKEN` | **Editor** | `scripts/seed.ts` only | **Never** |
-
-The write token can create and delete content. It belongs in `.env.local` on
-your machine and nowhere else — do not add it to Vercel.
-
-### 3. Add CORS origins
-
-Under **Manage → API → CORS Origins**, add every origin the Studio runs on, with
-**credentials allowed** ticked:
-
-- `http://localhost:3000`
-- your production origin, e.g. `https://cuthouse.ca`
-
-Without this the Studio loads but cannot reach the dataset, and the failure is a
-generic network error rather than anything that names CORS.
-
-### 4. Connect Mux
-
-Mux credentials are **not** environment variables — do not add them to
-`.env.example`. The plugin stores them as a private document inside the dataset.
-
-1. Create a Mux account and an **access token** (Settings → Access Tokens) with
-   *Mux Video* read and write permissions.
-2. Run `npm run dev`, open `http://localhost:3000/studio`.
-3. Open any project, find the **Film** field, and click the gear/settings icon on
-   the Mux input.
-4. Paste the token ID and secret. Done once, for the whole dataset.
-
-### 5. Import the legacy media (optional)
-
-Drop the old site's grid GIFs into `legacy/indeximages/`, then:
-
-```bash
-npm run seed
-```
-
-Everything lands as a **draft**, so nothing is public until it is published from
-the Studio. The script is idempotent — re-running skips what already exists;
-pass `--replace` to overwrite.
-
----
-
-## Environment variables
-
-```
-NEXT_PUBLIC_SANITY_PROJECT_ID       from sanity.io/manage
-NEXT_PUBLIC_SANITY_DATASET          production
-NEXT_PUBLIC_SANITY_API_VERSION      pinned date, e.g. 2026-01-01
-SANITY_API_READ_TOKEN               Viewer role
-SANITY_API_WRITE_TOKEN              Editor role — local only
-SANITY_REVALIDATE_SECRET            must match the Sanity webhook secret
-NEXT_PUBLIC_SITE_URL                canonical origin, no trailing slash
-```
-
-`NEXT_PUBLIC_SITE_URL` falls back to `VERCEL_PROJECT_PRODUCTION_URL`, so preview
-deploys still emit absolute URLs.
-
-All of these are read in `src/sanity/env.ts` and nowhere else. Missing ones throw
-at module load with a message pointing back at `.env.example`, rather than
-surfacing later as a confusing 404 from the Content Lake.
-
----
-
-## Content model
-
-Only `title` and `slug` are ever required. A project can go up today with just a
-video and a name and be backfilled months later.
-
-### `project`
-
-| Field | Type | Notes |
-| --- | --- | --- |
-| `title` | string | **required** |
-| `slug` | slug | **required** — the URL is `/work/{slug}` |
-| `client` | string | blank means personal work |
-| `date` | date | drives the displayed year and the grid order |
-| `summary` | text | cards, meta description, link previews |
-| `body` | richText | long-form write-up |
-| `video` | mux.video | the film |
-| `poster` | image | **override** for Mux's chosen frame |
-| `loop` | file | **override** for the hover loop; MP4/WebM beats GIF |
-| `gallery` | image[] | stills, each with alt + caption |
-| `roles` | string[] | his role — Director, Editor, DP |
-| `credits` | credit[] | everyone else |
-| `categories` | reference[] | taxonomy, unused by the launch layout |
-| `externalUrl` | url | campaign page or client site |
-| `featured` | boolean | homepage feature |
-| `hidden` | boolean | drops out of the grid, URL keeps working |
-| `orderRank` | number | manual sort; blank falls back to date desc |
-| `seo` | seo | collapsed by default, every field optional |
-
-### Singletons
-
-`siteSettings` and `infoPage` live at fixed document IDs and are pinned in the
-Studio sidebar. Document actions are filtered so they cannot be duplicated or
-deleted.
-
-### Objects
-
-`richText` (deliberately narrow — no tables, no colour), `credit`, `socialLink`,
-`seo`.
-
----
-
-## Architecture notes
-
-**All reads go through `sanityFetch`.** Production gets cached static data with
-sync tags attached per query; draft mode revalidates over a websocket so Studio
-edits appear live. The only two exceptions are `generateStaticParams` and
-`sitemap.ts`, which run outside the request lifecycle and use the plain client.
-
-**Types are generated, not written.** `npm run typegen` extracts the schema and
-regenerates `src/sanity/types.ts` — **run it after any schema or query change**.
-That file is committed because the build needs it; `src/sanity/extract.json` is
-an intermediate and is gitignored.
-
-**Stega.** Draft mode brands strings with invisible Visual Editing payloads.
-Component props widen over both cases via `StegaAware<T>`. `generateMetadata`
-passes `stega: false`, because metadata strings land in `<title>` and `og:` tags
-verbatim. Body content is never `stegaClean()`ed — that would strip the markers
-Visual Editing needs.
-
-**The Mux payoff.** One upload gives a poster frame, an animated loop, an HLS
-manifest, the aspect ratio and the duration. `poster` and `loop` in the schema
-are therefore only overrides; the fallback chain everywhere is
-*uploaded asset → Mux-generated → nothing*. URL builders live in
-`src/sanity/lib/mux.ts`, never inline in components.
-
-**Prev/next is index-based, on purpose.** The obvious implementation compares
-`orderRank` with `<` / `>` in GROQ. That is a bug here: the grid sorts on
-`coalesce(orderRank, 999999) asc, date desc`, so every project without a manual
-position shares the same fallback rank, the comparison matches nothing, and the
-nav silently vanishes. Instead `PROJECT_ORDER_QUERY` fetches a lightweight
-ordered `{title, slug}` list using the *same* ordering and neighbours resolve by
-array index.
-
-**Performance.** `next/image` with AVIF/WebP. LQIP blur placeholders come free
-out of asset metadata, so there is no layout shift. Hover loops are not mounted
-until the first hover or focus. The Mux player is imported from
-`@mux/mux-player-react/lazy`, so a grid never downloads a player nobody pressed
-play on. `prefers-reduced-motion` is honoured in `globals.css`.
-
-**Two freshness paths.** The Live Content API handles it automatically. The
-`/api/revalidate` webhook is belt-and-braces for an immediate purge on publish —
-it validates the signature and 401s on failure. Note `revalidateTag` takes two
-arguments in Next 16; `updateTag` is the single-arg one but is Server-Action only
-and does nothing in a route handler.
-
-**A build against an unreachable dataset fails on purpose.**
-`generateStaticParams` does not swallow errors. An empty dataset returns `[]`
-cleanly, so the only thing a throw signals is genuine misconfiguration —
-and silently shipping an empty portfolio is worse than a failed deploy.
-
----
-
-## Deploying to Vercel
-
-1. Import the repo. Framework preset is detected; leave the build command alone.
-2. Set the Node version to **24.x** under Settings → General.
-3. Add every env var above **except `SANITY_API_WRITE_TOKEN`**.
-4. Deploy, then add the production origin under
-   **sanity.io/manage → API → CORS Origins** with credentials allowed —
-   otherwise the deployed Studio cannot reach the dataset.
-5. Optional, for instant purges on publish: **Manage → API → Webhooks**, POST to
-   `https://your-domain/api/revalidate`, dataset `production`, trigger on
-   create/update/delete, and set the secret to match `SANITY_REVALIDATE_SECRET`.
-
----
-
-## Scripts
 
 | Command | Does |
 | --- | --- |
@@ -212,14 +233,9 @@ and silently shipping an empty portfolio is worse than a failed deploy.
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run lint` | ESLint |
 | `npm run typegen` | Regenerate `src/sanity/types.ts` from schema + queries |
-| `npm run seed` | Import `legacy/indeximages/` as drafts |
 
----
+Run `npm run typegen` after **any** schema or query change — `src/sanity/types.ts`
+is generated, committed, and the build depends on it.
 
-## Design reference
-
-`reference/` holds the client's mockup walkthroughs, chopped to frames, plus
-`MOCKUP-NOTES.md` — a written read of the layout, the intro animation, and the
-open questions. The current layout is deliberately plain scaffolding; all colour
-and type tokens live in a single `@theme` block in `src/app/globals.css` so the
-design can drop in without a refactor.
+Colour, type and motion tokens all live in a single `@theme` block in
+`src/app/globals.css`, so design changes do not need a refactor.
