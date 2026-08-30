@@ -71,7 +71,7 @@ export function ProjectCard({
         />
       )}
 
-      <div className="px-(--spacing-edge) pt-1.5 pb-5 md:px-0">
+      <div className="px-(--spacing-edge) pt-1.5 md:px-0">
         <div className="font-semibold">{label}</div>
         {roles?.length ? (
           <div className="text-(--color-ink-muted) transition-colors duration-(--duration-fast) group-hover:text-(--color-ink)">

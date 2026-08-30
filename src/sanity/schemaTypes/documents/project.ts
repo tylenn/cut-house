@@ -138,20 +138,30 @@ export const project = defineType({
 
     defineField({
       name: "roles",
-      title: "Your role",
+      title: "My role",
       type: "array",
       group: "details",
-      description: "What you did on this one — Director, Editor, DP.",
+      description:
+        "What you did on this one — Director, Editor, DP. Shown in grey under the title on the grid, and at the top of the credits.",
       of: [defineArrayMember({ type: "string" })],
       options: { layout: "tags" },
     }),
     defineField({
       name: "credits",
-      title: "Credits",
+      title: "Collaborators",
       type: "array",
       group: "details",
-      description: "Everyone else who worked on it.",
+      description: "Everyone else who worked on it. A link is optional.",
       of: [defineArrayMember({ type: "credit" })],
+    }),
+    defineField({
+      name: "additionalVideos",
+      title: "More films",
+      type: "array",
+      group: "media",
+      description:
+        "Anything beyond the main film. These run under the credits, two up on desktop.",
+      of: [defineArrayMember({ type: "filmClip" })],
     }),
     defineField({
       name: "categories",

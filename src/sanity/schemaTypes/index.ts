@@ -5,6 +5,7 @@ import { infoPage } from "./documents/infoPage";
 import { project } from "./documents/project";
 import { siteSettings } from "./documents/siteSettings";
 import { credit } from "./objects/credit";
+import { filmClip } from "./objects/filmClip";
 import { richText } from "./objects/richText";
 import { seo } from "./objects/seo";
 import { socialLink } from "./objects/socialLink";
@@ -18,6 +19,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   // Objects
   richText,
   credit,
+  filmClip,
   socialLink,
   seo,
 ];

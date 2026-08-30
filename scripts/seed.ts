@@ -67,6 +67,27 @@ async function seedSingletons() {
     _id: "infoPage",
     _type: "infoPage",
     heading: "Information",
+    bio: [
+      {
+        _type: "block",
+        _key: "bio0",
+        style: "normal",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            _key: "bio0a",
+            marks: [],
+            text:
+              "With the ability to execute distinctive projects, Tylen's work " +
+              "has led him to collaborate with global brands such as Sony, " +
+              "Salomon, Turo and more. Having majored in design, his creative " +
+              "practice is deeply informed by the arts, bringing a unique " +
+              "approach to every project.",
+          },
+        ],
+      },
+    ],
   });
 
   console.log("✓ singletons");

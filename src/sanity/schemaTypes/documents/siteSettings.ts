@@ -38,22 +38,6 @@ export const siteSettings = defineType({
         Rule.max(160).warning("Google usually cuts off around 160 characters."),
     }),
     defineField({
-      name: "introVideo",
-      title: "Intro film",
-      type: "mux.video",
-      group: "brand",
-      description:
-        "The clip behind the name when someone first opens the site. Leave blank and the intro plays without it.",
-    }),
-    defineField({
-      name: "introTagline",
-      title: "Intro tagline",
-      type: "string",
-      group: "brand",
-      description:
-        'The small line under the name during the intro — "a global production services company".',
-    }),
-    defineField({
       name: "lettermark",
       title: "Lettermark",
       type: "image",

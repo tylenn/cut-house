@@ -71,6 +71,7 @@ export const PROJECT_QUERY = defineQuery(`
     poster { ${IMAGE_FRAGMENT} },
     gallery[] { _key, ${IMAGE_FRAGMENT}, caption },
     video { ${VIDEO_FRAGMENT} },
+    additionalVideos[] { _key, label, video { ${VIDEO_FRAGMENT} } },
     seo { title, description, noIndex, image { ${IMAGE_FRAGMENT} } }
   }
 `);
@@ -111,8 +112,6 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     description,
     email,
     socialLinks[] { _key, label, url },
-    introTagline,
-    introVideo { ${VIDEO_FRAGMENT} },
     lettermark { ${IMAGE_FRAGMENT} },
     ogImage { ${IMAGE_FRAGMENT} },
     "resumeUrl": resume.asset->url

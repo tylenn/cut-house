@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import { TransitionLink } from "@/components/TransitionLink";
+import { COPYRIGHT_HOLDER } from "@/lib/site";
 import { Wordmark } from "@/components/Wordmark";
 
 const NAV = [
@@ -13,8 +14,7 @@ const NAV = [
 
 /**
  * Desktop: nav pinned top-left, wordmark vertically centred, copyright at the
- * foot. The wordmark's position and size are shared with the intro, which is
- * why the handoff at the end of the intro needs no animation at all.
+ * foot.
  *
  * Mobile: the rail collapses to a sticky bar and the nav moves behind a `+`
  * that pushes the page down when opened, per the client's mockup.
@@ -52,15 +52,18 @@ export function Rail({ name, tagline }: { name: string; tagline?: string }) {
           aria-expanded={open}
           aria-controls="mobile-nav"
           aria-label={open ? "Close menu" : "Open menu"}
-          className="relative h-5 w-5"
+          // The glyph is narrower than its 20px target, so the button is pulled
+          // 2px right: what should line up with the wordmark's inset is the
+          // plus's own edge, not the edge of the box it is centred in.
+          className="relative -mr-0.5 h-5 w-5"
         >
           {/* Two strokes that rotate into an ×, rather than swapping glyphs. */}
           <span
-            className="absolute top-1/2 left-0 block h-px w-5 bg-current transition-transform duration-(--duration-base) ease-(--ease-out-soft)"
+            className="absolute top-1/2 left-1/2 -mt-[0.75px] -ml-2 block h-[1.5px] w-4 bg-current transition-transform duration-(--duration-base) ease-(--ease-out-soft)"
             style={{ transform: open ? "rotate(45deg)" : "none" }}
           />
           <span
-            className="absolute top-1/2 left-0 block h-px w-5 bg-current transition-transform duration-(--duration-base) ease-(--ease-out-soft)"
+            className="absolute top-1/2 left-1/2 -mt-[0.75px] -ml-2 block h-[1.5px] w-4 bg-current transition-transform duration-(--duration-base) ease-(--ease-out-soft)"
             style={{ transform: open ? "rotate(-45deg)" : "rotate(90deg)" }}
           />
         </button>
@@ -93,10 +96,12 @@ export function Rail({ name, tagline }: { name: string; tagline?: string }) {
           <TransitionLink
             key={item.href}
             href={item.href}
-            className={`-mx-1.5 block w-fit rounded-[2px] px-1.5 py-0.5 transition-colors duration-(--duration-fast) hover:bg-(--color-hover) ${
+            // Negative margin cancels the padding, so the target stays large
+            // without the label shifting off the rail's optical left edge.
+            className={`-mx-1.5 block w-fit px-1.5 py-0.5 transition-colors duration-(--duration-fast) ${
               isActive(item.href)
                 ? "font-semibold text-(--color-ink)"
-                : "text-(--color-ink-muted)"
+                : "text-(--color-ink-muted) hover:text-(--color-ink)"
             }`}
           >
             {item.label}
@@ -109,8 +114,7 @@ export function Rail({ name, tagline }: { name: string; tagline?: string }) {
       </div>
 
       <p className="hidden px-(--spacing-edge) text-(length:--text-meta) text-(--color-ink-faint) md:block">
-        ©{new Date().getFullYear()} {name}. All rights reserved. No part of this
-        website may be reproduced without permission.
+        © {new Date().getFullYear()} {COPYRIGHT_HOLDER}. All rights reserved.
       </p>
     </aside>
   );

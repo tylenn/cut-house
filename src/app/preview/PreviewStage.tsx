@@ -1,23 +1,30 @@
 "use client";
 
-import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { InfoOverlay } from "@/components/InfoOverlay";
-import { Intro } from "@/components/Intro";
 import { Rail } from "@/components/Rail";
 
 const NAME = "cut house";
 const TAGLINE = "a global production services company";
 
 const FIXTURES = [
-  { src: "/preview/a.jpg", title: "curves at home", roles: "editor, colorist" },
-  { src: "/preview/b.jpg", title: "mandy's falloween", roles: "director, editor" },
-  { src: "/preview/c.jpg", title: "summer minute", roles: "director of photography, editor" },
-  { src: "/preview/d.jpg", title: "sony & daytimers", roles: "director of photography, editor" },
-  { src: "/preview/e.jpg", title: "curves, home/wear", roles: "director of photography, editor" },
-  { src: "/preview/f.jpg", title: "finn wolfhard, tad", roles: "behind the scenes" },
+  { title: "curves at home", roles: "editor, colorist" },
+  { title: "mandy's falloween", roles: "director, editor" },
+  { title: "summer minute", roles: "director of photography, editor" },
+  { title: "sony & daytimers", roles: "director of photography, editor" },
+  { title: "curves, home/wear", roles: "director of photography, editor" },
+  { title: "finn wolfhard, tad", roles: "behind the scenes" },
+  { title: "turo landing", roles: "director, editor" },
+  { title: "salomon winter", roles: "director of photography" },
+  { title: "harry rosen", roles: "editor, colorist" },
+  { title: "slushy noobz", roles: "director, editor" },
+  { title: "new west 199x", roles: "director of photography, editor" },
+  { title: "dine alone", roles: "editor" },
+  { title: "tridel", roles: "colorist" },
+  { title: "crave", roles: "director of photography" },
+  { title: "sony recut", roles: "editor, colorist" },
+  { title: "curves reprise", roles: "director, editor" },
 ];
 
 const CLIENTS = [
@@ -27,28 +34,11 @@ const CLIENTS = [
 ];
 
 export function PreviewStage() {
-  const params = useSearchParams();
-  // ?slow=4 stretches the intro 4x so each beat can be watched.
-  const speed = 1 / Math.max(1, Number(params.get("slow") ?? 1));
   const [info, setInfo] = useState(false);
-  const [run, setRun] = useState(0);
 
   return (
     <>
-      {/* Remounting on a new key replays the intro without a page reload. */}
-      <Intro key={run} name={NAME} tagline={TAGLINE} speed={speed} />
-
       <div className="fixed right-3 bottom-3 z-40 flex gap-2 text-(length:--text-meta)">
-        <button
-          type="button"
-          onClick={() => {
-            document.cookie = "ch_intro=; path=/; max-age=0";
-            setRun((n) => n + 1);
-          }}
-          className="rounded-[2px] bg-(--color-ink) px-2 py-1 text-(--color-page)"
-        >
-          replay intro
-        </button>
         <button
           type="button"
           onClick={() => setInfo((v) => !v)}
@@ -59,25 +49,20 @@ export function PreviewStage() {
       </div>
 
       <div className="md:flex md:min-h-screen">
-        <Rail name={NAME} tagline="cinematographer, editor" />
+        <Rail name={NAME} tagline={TAGLINE} />
 
         <main className="relative min-w-0 flex-1 md:py-4">
           <div className="grid grid-cols-1 gap-x-(--spacing-gutter) md:grid-cols-2">
             {FIXTURES.map((item, i) => (
               <div
-                key={item.src}
+                key={item.title}
                 className="stagger-child group block"
                 style={{ "--i": i } as React.CSSProperties}
               >
-                <div className="relative aspect-video overflow-hidden bg-(--color-rule)">
-                  <Image
-                    src={item.src}
-                    alt={item.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 45vw"
-                    className="object-cover transition-transform duration-(--duration-slow) ease-(--ease-out-soft) group-hover:scale-[1.02]"
-                  />
-                </div>
+                {/* A flat tone, not a still. The real grid runs Mux loops through
+                    ProjectMedia; standing in with imagery here invites notes on
+                    photography that is not the thing being designed. */}
+                <div className="aspect-video bg-(--color-rule)" />
                 <div className="px-(--spacing-edge) pt-1.5 pb-5 md:px-0">
                   <div className="font-semibold">{item.title}</div>
                   <div className="text-(--color-ink-muted) transition-colors duration-(--duration-fast) group-hover:text-(--color-ink)">
@@ -103,11 +88,11 @@ export function PreviewStage() {
                 <section className="mb-8">
                   <h2 className="mb-1 font-semibold">Description</h2>
                   <p className="mb-4">
-                    Tylen is a cinematographer &amp; editor who delivers creative
-                    visuals rooted in purpose-driven storytelling. Combining his
-                    academic background in advertising and cinematography, he blends
-                    the intersection between thoughtful compositions with a distinct
-                    visual language.
+                    With the ability to execute distinctive projects, Tylen&apos;s
+                    work has led him to collaborate with global brands such as Sony,
+                    Salomon, Turo and more. Having majored in design, his creative
+                    practice is deeply informed by the arts, bringing a unique
+                    approach to every project.
                   </p>
                 </section>
                 <section>

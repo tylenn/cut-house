@@ -1,11 +1,6 @@
 /**
- * The wordmark, in exactly one place.
- *
- * The intro's final frame and the rail both render this at the same size and
- * the same distance from the left edge. That is the whole trick behind the
- * handoff: when the intro's background fades, the rail's wordmark is already
- * sitting underneath at identical coordinates, so there is nothing to animate
- * and nothing to line up.
+ * The wordmark, in exactly one place, so the rail and any future surface that
+ * needs it stay identical in size and offset without being kept in sync by hand.
  */
 export function Wordmark({
   name,

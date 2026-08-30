@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { PortableText } from "@/components/PortableText";
 import { TransitionLink } from "@/components/TransitionLink";
 import { workHref } from "@/lib/routes";
+import { PRINCIPAL } from "@/lib/site";
 import { SanityImage } from "@/components/SanityImage";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { client } from "@/sanity/lib/client";
@@ -99,18 +100,30 @@ export default async function ProjectPage({ params }: Props) {
       </div>
 
       <header className="animate-rise-in px-(--spacing-edge) pt-2 md:px-0">
-        <h1 className="font-semibold">
+        <h1 className="text-(length:--text-title) leading-(--text-title--line-height) font-semibold">
           {project.title}
           {project.client ? ` — ${project.client}` : null}
         </h1>
 
-        {project.credits?.length ? (
+        {project.roles?.length || project.credits?.length ? (
           <dl className="mt-3 max-w-[230px] text-(--color-ink-muted)">
-            {project.credits.map((entry, index) => (
+            {/* His row first, and in full ink: the same role/name shape as
+                everyone below, but it is the one the visitor came for. */}
+            {project.roles?.length ? (
+              <div
+                className="stagger-child flex justify-between gap-4"
+                style={{ "--i": 2 } as React.CSSProperties}
+              >
+                <dt>{project.roles.join(", ")}</dt>
+                <dd className="text-right text-(--color-ink)">{PRINCIPAL}</dd>
+              </div>
+            ) : null}
+
+            {project.credits?.map((entry, index) => (
               <div
                 key={entry._key}
                 className="stagger-child flex justify-between gap-4"
-                style={{ "--i": index + 2 } as React.CSSProperties}
+                style={{ "--i": index + 3 } as React.CSSProperties}
               >
                 <dt>{entry.role}</dt>
                 <dd className="text-right">
@@ -153,6 +166,34 @@ export default async function ProjectPage({ params }: Props) {
       {project.body?.length ? (
         <div className="animate-rise-in mt-8 max-w-[62ch] px-(--spacing-edge) md:px-0">
           <PortableText value={project.body} />
+        </div>
+      ) : null}
+
+      {project.additionalVideos?.length ? (
+        <div className="mt-10 grid grid-cols-1 gap-(--spacing-gutter) md:grid-cols-2">
+          {project.additionalVideos.map((clip, index) => {
+            const clipId = clip.video?.playbackId;
+            if (!clipId) return null;
+            return (
+              <figure
+                key={clip._key}
+                className="stagger-child"
+                style={{ "--i": index } as React.CSSProperties}
+              >
+                <VideoPlayer
+                  playbackId={clipId}
+                  title={clip.label ?? undefined}
+                  poster={muxPosterUrl(clipId, { width: 900 })}
+                  aspectRatio={muxAspectRatio(clip.video?.aspectRatio)}
+                />
+                {clip.label ? (
+                  <figcaption className="pt-1.5 text-(--color-ink-muted)">
+                    {clip.label}
+                  </figcaption>
+                ) : null}
+              </figure>
+            );
+          })}
         </div>
       ) : null}
 

@@ -1,13 +1,9 @@
+import { COPYRIGHT_HOLDER } from "@/lib/site";
+
 type Link = { _key: string; label: string | null; url: string | null };
 
 /** Mobile only — on desktop the copyright lives at the foot of the rail. */
-export function SiteFooter({
-  name,
-  links,
-}: {
-  name: string;
-  links: Link[];
-}) {
+export function SiteFooter({ links }: { links: Link[] }) {
   return (
     <footer className="px-(--spacing-edge) py-8 md:hidden">
       {links.length ? (
@@ -26,7 +22,7 @@ export function SiteFooter({
         </ul>
       ) : null}
       <div className="flex justify-between text-(--color-ink-muted)">
-        <span>{name}. All rights reserved.</span>
+        <span>{COPYRIGHT_HOLDER}. All rights reserved.</span>
         <span>© {new Date().getFullYear()}</span>
       </div>
     </footer>
