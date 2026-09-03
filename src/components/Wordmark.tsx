@@ -11,7 +11,7 @@ export function Wordmark({
 }) {
   return (
     <span
-      className={`block text-(length:--text-display) leading-(--text-display--line-height) font-bold tracking-[-0.02em] ${className}`}
+      className={`block text-(length:--text-display) leading-(--text-display--line-height) font-normal tracking-[-0.02em] ${className}`}
     >
       {name}
     </span>
