@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 
   return {
-    title: settings?.title ?? "cut house",
+    title: settings?.title ?? "Cut House",
     description: settings?.description ?? undefined,
   };
 }
