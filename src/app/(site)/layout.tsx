@@ -14,7 +14,7 @@ export default async function SiteLayout({
 
   const { data: settings } = await sanityFetch({ query: SITE_SETTINGS_QUERY });
 
-  const name = settings?.title ?? "Cut House Company";
+  const name = settings?.title ?? "CUT HOUSE";
 
   return (
     <>
