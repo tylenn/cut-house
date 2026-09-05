@@ -8,9 +8,16 @@ import { SITEMAP_QUERY } from "@/sanity/lib/queries";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const projects = await client.fetch(SITEMAP_QUERY);
 
+  const now = new Date();
+
   return [
-    { url: siteUrl, changeFrequency: "weekly", priority: 1 },
-    { url: `${siteUrl}/info`, changeFrequency: "monthly", priority: 0.5 },
+    { url: siteUrl, lastModified: now, changeFrequency: "weekly", priority: 1 },
+    {
+      url: `${siteUrl}/info`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
     ...projects
       .filter((project) => project.slug)
       .map((project) => ({

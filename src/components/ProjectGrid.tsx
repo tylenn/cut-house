@@ -19,7 +19,7 @@ export function ProjectGrid({ projects }: { projects: ProjectCardData[] }) {
     return (
       <div
         aria-hidden
-        className="grid grid-cols-1 gap-(--spacing-grid) md:grid-cols-2 md:pr-(--spacing-edge)"
+        className="grid grid-cols-1 gap-(--spacing-grid) md:grid-cols-2"
       >
         {Array.from({ length: PLACEHOLDER_COUNT }, (_, index) => (
           <div
@@ -28,7 +28,7 @@ export function ProjectGrid({ projects }: { projects: ProjectCardData[] }) {
             style={{ "--i": index } as React.CSSProperties}
           >
             <div className="aspect-video w-full bg-(--color-rule)" />
-            <div className="px-(--spacing-edge) pt-2 md:px-0">
+            <div className="px-(--spacing-edge) pt-1 md:px-0">
               <div className="h-2.5 w-32 bg-(--color-rule)" />
               <div className="mt-1.5 h-2.5 w-44 bg-(--color-rule)/60" />
             </div>
@@ -39,7 +39,7 @@ export function ProjectGrid({ projects }: { projects: ProjectCardData[] }) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-(--spacing-grid) md:grid-cols-2 md:pr-(--spacing-edge)">
+    <div className="grid grid-cols-1 gap-(--spacing-grid) md:grid-cols-2">
       {projects.map((project, index) => (
         <ProjectCard
           key={project._id}

@@ -18,6 +18,10 @@ import {
  * Both a plain <video> and <mux-player> satisfy it, which is the point: the
  * controls are not coupled to Mux and survive a change of video backend
  * untouched.
+ *
+ * mux-player composes an inner media node (`el.media`) that is the one which
+ * actually fires play/pause/timeupdate. play() on the host delegates; the
+ * events do not.
  */
 export type MediaLike = Pick<
   HTMLMediaElement,
@@ -31,6 +35,16 @@ export type MediaLike = Pick<
   | "addEventListener"
   | "removeEventListener"
 >;
+
+type MediaHost = MediaLike & { media?: MediaLike | null };
+
+function resolveMedia(el: MediaHost | null): MediaLike | null {
+  if (!el) return null;
+  if ("media" in el && el.media) return el.media;
+  // Host exists but its inner media has not upgraded yet — keep waiting.
+  if ("media" in el) return null;
+  return el;
+}
 
 type Props = {
   mediaRef: React.RefObject<MediaLike | null>;
@@ -80,12 +94,14 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
 
   // ---- media -> state ---------------------------------------------------
   useEffect(() => {
-    const media = mediaRef.current;
-    if (!media) return;
+    // Mux's lazy player does not fill the ref until it has intersected and the
+    // chunk has loaded. This effect mounts in the same tick as the placeholder,
+    // so we wait for the real node rather than attaching to nothing and never
+    // hearing play/pause.
+    let cancelled = false;
+    let media: MediaLike | null = null;
+    let frame = 0;
 
-    // Idle handling hangs off the media events rather than an effect watching
-    // `playing`: these are user-driven, so the bar never hides or reappears as
-    // a side effect of a render.
     const onPlay = () => {
       setPlaying(true);
       setEnded(false);
@@ -102,22 +118,50 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
       setIdle(false);
       clearIdle();
     };
-    // Skipped while scrubbing, or the thumb fights the element's own updates.
     const onTime = () => {
-      if (!scrubbingRef.current) setTime(media.currentTime);
+      // Skipped while scrubbing, or the thumb fights the element's own updates.
+      if (!scrubbingRef.current && media) setTime(media.currentTime);
     };
-    const onMeta = () => setDuration(media.duration);
-    const onVolume = () => setMuted(media.muted);
+    const onMeta = () => {
+      if (media) setDuration(media.duration);
+    };
+    const onVolume = () => {
+      if (media) setMuted(media.muted);
+    };
 
-    media.addEventListener("play", onPlay);
-    media.addEventListener("pause", onPause);
-    media.addEventListener("ended", onEnded);
-    media.addEventListener("timeupdate", onTime);
-    media.addEventListener("loadedmetadata", onMeta);
-    media.addEventListener("durationchange", onMeta);
-    media.addEventListener("volumechange", onVolume);
+    const attach = (el: MediaLike) => {
+      media = el;
+      setPlaying(!el.paused);
+      setEnded(el.ended);
+      setMuted(el.muted);
+      if (Number.isFinite(el.duration) && el.duration > 0) {
+        setDuration(el.duration);
+      }
+      el.addEventListener("play", onPlay);
+      el.addEventListener("pause", onPause);
+      el.addEventListener("ended", onEnded);
+      el.addEventListener("timeupdate", onTime);
+      el.addEventListener("loadedmetadata", onMeta);
+      el.addEventListener("durationchange", onMeta);
+      el.addEventListener("volumechange", onVolume);
+    };
+
+    const wait = () => {
+      if (cancelled) return;
+      const target = resolveMedia(mediaRef.current as MediaHost | null);
+      if (target) {
+        attach(target);
+        return;
+      }
+      frame = requestAnimationFrame(wait);
+    };
+
+    wait();
 
     return () => {
+      cancelled = true;
+      if (frame) cancelAnimationFrame(frame);
+      if (!media) return;
       media.removeEventListener("play", onPlay);
       media.removeEventListener("pause", onPause);
       media.removeEventListener("ended", onEnded);
@@ -137,13 +181,20 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
 
   // ---- actions ----------------------------------------------------------
   const toggle = useCallback(() => {
-    const media = mediaRef.current;
+    const media = resolveMedia(mediaRef.current as MediaHost | null) ?? mediaRef.current;
     if (!media) return;
     if (media.paused) {
       // Rejected autoplay is not an error worth surfacing — the poster stays.
-      void media.play().catch(() => {});
+      void media
+        .play()
+        .then(() => {
+          setPlaying(true);
+          setEnded(false);
+        })
+        .catch(() => {});
     } else {
       media.pause();
+      setPlaying(false);
     }
   }, [mediaRef]);
 

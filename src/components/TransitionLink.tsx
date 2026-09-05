@@ -4,9 +4,21 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, type ComponentProps } from "react";
 
-import type { PushTarget } from "@/lib/routes";
+import type { Href, PushTarget } from "@/lib/routes";
 
 type Props = ComponentProps<typeof Link>;
+
+/** Overlays sit on top of the current page — a root crossfade reads as a delay. */
+function usesViewTransition(href: Href) {
+  const path =
+    typeof href === "string"
+      ? href.split("?")[0]
+      : typeof href === "object" && href && "pathname" in href
+        ? href.pathname
+        : null;
+
+  return path !== "/info" && !path?.startsWith("/work/");
+}
 
 /**
  * Link that crossfades between pages using the browser's View Transitions API.
@@ -34,7 +46,8 @@ export function TransitionLink({ href, onClick, ...props }: Props) {
           // open-in-new-tab, middle click, and so on.
           event.button !== 0 ||
           !("startViewTransition" in document) ||
-          window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+          !usesViewTransition(href)
         ) {
           return;
         }

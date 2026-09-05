@@ -11,13 +11,37 @@ export const infoPage = defineType({
       name: "heading",
       title: "Heading",
       type: "string",
-      description: "The title at the top of the page.",
+      description:
+        "Browser tab title. Not shown on the page itself — the sections carry the layout.",
+    }),
+    defineField({
+      name: "availability",
+      title: "Availability",
+      type: "string",
+      description: 'The line under the email — "Available globally."',
+    }),
+    defineField({
+      name: "application",
+      title: "Application",
+      type: "text",
+      rows: 3,
+      description:
+        "The short note under Application, typically about the full list being available on request.",
     }),
     defineField({
       name: "bio",
-      title: "About",
+      title: "Description",
       type: "richText",
       description: "The main write-up.",
+    }),
+    defineField({
+      name: "readMoreUrl",
+      title: "Read more",
+      type: "url",
+      description:
+        'Optional. Shown as a "read more" link under the description.',
+      validation: (Rule) =>
+        Rule.uri({ scheme: ["http", "https", "mailto"] }),
     }),
     defineField({
       name: "portrait",
@@ -40,7 +64,6 @@ export const infoPage = defineType({
       type: "array",
       description: "One name per line. Shown as a list.",
       of: [defineArrayMember({ type: "string" })],
-      options: { layout: "tags" },
     }),
     defineField({
       name: "seo",

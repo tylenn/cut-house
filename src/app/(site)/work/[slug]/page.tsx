@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { JsonLd } from "@/components/JsonLd";
 import { PortableText } from "@/components/PortableText";
-import { TransitionLink } from "@/components/TransitionLink";
+import { ProjectEnterLink } from "@/components/ProjectEnterLink";
+import { ProjectHeroEnter } from "@/components/ProjectHeroEnter";
+import { ProjectPageStagger } from "@/components/ProjectPageStagger";
 import { workHref } from "@/lib/routes";
+import { pageMetadata, projectJsonLd, projectShareImageUrl } from "@/lib/seo";
 import { PRINCIPAL } from "@/lib/site";
 import { SanityImage } from "@/components/SanityImage";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { client } from "@/sanity/lib/client";
 import { sanityFetch } from "@/sanity/lib/live";
-import {
-  muxAspectRatio,
-  muxPosterUrl,
-  formatDuration,
-} from "@/sanity/lib/mux";
+import { muxAspectRatio, muxPosterUrl } from "@/sanity/lib/mux";
 import {
   PROJECT_ORDER_QUERY,
   PROJECT_QUERY,
@@ -42,15 +42,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!project) return {};
 
-  const title = project.seo?.title ?? project.title ?? undefined;
+  const title = project.seo?.title ?? project.title ?? "Untitled";
   const description = project.seo?.description ?? project.summary ?? undefined;
 
-  return {
+  return pageMetadata({
     title,
     description,
-    robots: project.seo?.noIndex ? { index: false, follow: false } : undefined,
-    openGraph: { title: title ?? undefined, description, type: "video.other" },
-  };
+    path: `/work/${slug}`,
+    noIndex: Boolean(project.seo?.noIndex),
+    ogType: project.video?.playbackId ? "video.other" : "website",
+  });
 }
 
 export default async function ProjectPage({ params }: Props) {
@@ -62,6 +63,8 @@ export default async function ProjectPage({ params }: Props) {
   ]);
 
   if (!project) notFound();
+
+  const shareImage = projectShareImageUrl(project);
 
   // Neighbours by array index, not by a GROQ orderRank comparison: every project
   // without a manual position shares the same coalesced rank, so a < / > query
@@ -75,32 +78,35 @@ export default async function ProjectPage({ params }: Props) {
 
   const playbackId = project.video?.playbackId ?? undefined;
   const aspectRatio = muxAspectRatio(project.video?.aspectRatio);
-  const duration = formatDuration(project.video?.duration);
-  const year = project.date ? new Date(project.date).getFullYear() : undefined;
 
   return (
-    <article className="pb-24">
-      <div className="animate-fade-in">
-      {playbackId ? (
-        <VideoPlayer
-          playbackId={playbackId}
-          title={project.title ?? undefined}
-          poster={muxPosterUrl(playbackId, { width: 1600 })}
-          aspectRatio={aspectRatio}
-        />
-      ) : project.poster?.asset ? (
-        <SanityImage
-          image={project.poster}
-          alt={project.title ?? ""}
-          sizes="(max-width: 768px) 100vw, 66vw"
-          priority
-          className="h-auto w-full"
-        />
-      ) : null}
-      </div>
+    <>
+      <JsonLd data={projectJsonLd(project, `/work/${slug}`, shareImage)} />
+      <ProjectPageStagger>
+        <ProjectHeroEnter>
+        {playbackId ? (
+          <VideoPlayer
+            playbackId={playbackId}
+            title={project.title ?? undefined}
+            poster={muxPosterUrl(playbackId, { width: 1600 })}
+            aspectRatio={aspectRatio}
+          />
+        ) : project.poster?.asset ? (
+          <SanityImage
+            image={project.poster}
+            alt={project.title ?? ""}
+            sizes="(max-width: 768px) 100vw, 66vw"
+            priority
+            className="h-auto w-full"
+          />
+        ) : null}
+      </ProjectHeroEnter>
 
-      <header className="animate-rise-in px-(--spacing-edge) pt-2 md:px-0">
-        <h1 className="text-(length:--text-title) leading-(--text-title--line-height) font-semibold">
+      <header className="px-(--spacing-edge) pt-2 md:px-0">
+        <h1
+          data-project-stagger
+          className="text-(length:--text-title) leading-(--text-title--line-height) font-semibold"
+        >
           {project.title}
           {project.client ? ` — ${project.client}` : null}
         </h1>
@@ -110,20 +116,17 @@ export default async function ProjectPage({ params }: Props) {
             {/* His row first, and in full ink: the same role/name shape as
                 everyone below, but it is the one the visitor came for. */}
             {project.roles?.length ? (
-              <div
-                className="stagger-child flex justify-between gap-4"
-                style={{ "--i": 2 } as React.CSSProperties}
-              >
+              <div data-project-stagger className="flex justify-between gap-4">
                 <dt>{project.roles.join(", ")}</dt>
                 <dd className="text-right text-(--color-ink)">{PRINCIPAL}</dd>
               </div>
             ) : null}
 
-            {project.credits?.map((entry, index) => (
+            {project.credits?.map((entry) => (
               <div
                 key={entry._key}
-                className="stagger-child flex justify-between gap-4"
-                style={{ "--i": index + 3 } as React.CSSProperties}
+                data-project-stagger
+                className="flex justify-between gap-4"
               >
                 <dt>{entry.role}</dt>
                 <dd className="text-right">
@@ -145,14 +148,9 @@ export default async function ProjectPage({ params }: Props) {
           </dl>
         ) : null}
 
-        {year || duration ? (
-          <p className="mt-3 text-(--color-ink-faint)">
-            {[year, duration].filter(Boolean).join(" · ")}
-          </p>
-        ) : null}
-
         {project.externalUrl ? (
           <a
+            data-project-stagger
             href={project.externalUrl}
             target="_blank"
             rel="noopener noreferrer"
@@ -164,21 +162,23 @@ export default async function ProjectPage({ params }: Props) {
       </header>
 
       {project.body?.length ? (
-        <div className="animate-rise-in mt-8 max-w-[62ch] px-(--spacing-edge) md:px-0">
+        <div
+          data-project-stagger
+          className="mt-8 max-w-[62ch] px-(--spacing-edge) md:px-0"
+        >
           <PortableText value={project.body} />
         </div>
       ) : null}
 
       {project.additionalVideos?.length ? (
         <div className="mt-10 grid grid-cols-1 gap-(--spacing-gutter) md:grid-cols-2">
-          {project.additionalVideos.map((clip, index) => {
+          {project.additionalVideos.map((clip) => {
             const clipId = clip.video?.playbackId;
             if (!clipId) return null;
             return (
               <figure
                 key={clip._key}
-                className="stagger-child"
-                style={{ "--i": index } as React.CSSProperties}
+                data-project-stagger
               >
                 <VideoPlayer
                   playbackId={clipId}
@@ -199,12 +199,8 @@ export default async function ProjectPage({ params }: Props) {
 
       {project.gallery?.length ? (
         <div className="mt-10 grid grid-cols-1 gap-(--spacing-gutter) md:grid-cols-2">
-          {project.gallery.map((still, index) => (
-            <figure
-              key={still._key}
-              className="stagger-child"
-              style={{ "--i": index } as React.CSSProperties}
-            >
+          {project.gallery.map((still) => (
+            <figure key={still._key} data-project-stagger>
               <SanityImage
                 image={still}
                 sizes="(max-width: 768px) 100vw, 45vw"
@@ -221,35 +217,41 @@ export default async function ProjectPage({ params }: Props) {
       ) : null}
 
       {previous || next ? (
-        <nav className="mt-16 flex justify-between gap-8 px-(--spacing-edge) md:px-0">
+        <nav
+          data-project-stagger
+          className="mt-16 flex justify-between gap-8 px-(--spacing-edge) md:px-0"
+        >
           {previous?.slug ? (
-            <TransitionLink
+            <ProjectEnterLink
               href={workHref(previous.slug)}
+              enter="adjacent"
               className="group text-(--color-ink-muted) transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
             >
               <span className="inline-block transition-transform duration-(--duration-base) ease-(--ease-out-soft) group-hover:-translate-x-1">
                 ←
               </span>{" "}
               {previous.title}
-            </TransitionLink>
+            </ProjectEnterLink>
           ) : (
             <span />
           )}
           {next?.slug ? (
-            <TransitionLink
+            <ProjectEnterLink
               href={workHref(next.slug)}
+              enter="adjacent"
               className="group text-right text-(--color-ink-muted) transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
             >
               {next.title}{" "}
               <span className="inline-block transition-transform duration-(--duration-base) ease-(--ease-out-soft) group-hover:translate-x-1">
                 →
               </span>
-            </TransitionLink>
+            </ProjectEnterLink>
           ) : (
             <span />
           )}
         </nav>
       ) : null}
-    </article>
+    </ProjectPageStagger>
+    </>
   );
 }

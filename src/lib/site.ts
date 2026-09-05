@@ -8,5 +8,15 @@
  */
 export const COPYRIGHT_HOLDER = "Cut House";
 
+/** Wordmark / browser-tab name. Lowercase on purpose. */
+export const SITE_NAME = "cut house";
+
+/**
+ * Fallback for <meta name="description">, Open Graph, and JSON-LD when Sanity
+ * has not set a site description yet.
+ */
+export const DEFAULT_DESCRIPTION =
+  "Cut House is a global production services company. Cinematography and editing by Tylen — purpose-driven visuals for film, advertising, and commercial work.";
+
 /** Name against the first row of a project's credits, above collaborators. */
 export const PRINCIPAL = "Tylen";

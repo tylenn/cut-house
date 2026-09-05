@@ -6,7 +6,6 @@ import { InfoOverlay } from "@/components/InfoOverlay";
 import { Rail } from "@/components/Rail";
 
 const NAME = "cut house";
-const TAGLINE = "a global production services company";
 
 const FIXTURES = [
   { title: "curves at home", roles: "editor, colorist" },
@@ -49,9 +48,9 @@ export function PreviewStage() {
       </div>
 
       <div className="md:flex md:min-h-screen">
-        <Rail name={NAME} tagline={TAGLINE} />
+        <Rail name={NAME} />
 
-        <main className="relative min-w-0 flex-1 md:py-4">
+        <main className="relative min-w-0 flex-1 md:px-(--spacing-edge) md:py-5.5">
           <div className="grid grid-cols-1 gap-x-(--spacing-gutter) md:grid-cols-2">
             {FIXTURES.map((item, i) => (
               <div
@@ -75,24 +74,24 @@ export function PreviewStage() {
 
           {info ? (
             <InfoOverlay>
-              <div className="max-w-[68ch]">
+              <div className="animate-info-content-in max-w-[68ch]">
                 <section className="mb-8">
                   <h2 className="font-semibold">Contact</h2>
-                  <span className="block text-(--color-ink-muted)">info@cuthouse.ca</span>
-                  <span className="block">Available globally.</span>
+                  <span className="block text-(--color-ink-muted)">info@tylen.ca</span>
+                  <p>Available globally.</p>
                 </section>
                 <section className="mb-8">
                   <h2 className="font-semibold">Application</h2>
                   <p>Full client list and commercial portfolio available upon request.</p>
                 </section>
                 <section className="mb-8">
-                  <h2 className="mb-1 font-semibold">Description</h2>
-                  <p className="mb-4">
-                    With the ability to execute distinctive projects, Tylen&apos;s
-                    work has led him to collaborate with global brands such as Sony,
-                    Salomon, Turo and more. Having majored in design, his creative
-                    practice is deeply informed by the arts, bringing a unique
-                    approach to every project.
+                  <h2 className="font-semibold">Description</h2>
+                  <p>
+                    Tylen is a cinematographer &amp; editor who delivers creative
+                    visuals rooted in purpose-driven storytelling. Combining his
+                    academic background in advertising and cinematography, he
+                    blends the intersection between thoughtful compositions with
+                    a distinct visual language.
                   </p>
                 </section>
                 <section>

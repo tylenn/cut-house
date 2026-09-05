@@ -55,18 +55,35 @@ function slugify(title: string): string {
 }
 
 async function seedSingletons() {
-  // createIfNotExists, so re-running never clobbers settings he has edited.
+  // createIfNotExists, so re-running never clobbers settings he has edited —
+  // except email, which the info sheet needs and we only set if missing.
   await client.createIfNotExists({
     _id: "siteSettings",
     _type: "siteSettings",
     title: "cut house",
     tagline: "a global production services company",
+    description:
+      "Cut House is a global production services company. Cinematography and editing by Tylen — purpose-driven visuals for film, advertising, and commercial work.",
+    email: "info@tylen.ca",
   });
+  await client
+    .patch("siteSettings")
+    .set({ email: "info@tylen.ca" })
+    .setIfMissing({
+      description:
+        "Cut House is a global production services company. Cinematography and editing by Tylen — purpose-driven visuals for film, advertising, and commercial work.",
+    })
+    .commit();
 
-  await client.createIfNotExists({
+  // The information sheet is a known layout. Replacing it is the point of this
+  // seed — createIfNotExists would leave a stub heading and the old bio.
+  await client.createOrReplace({
     _id: "infoPage",
     _type: "infoPage",
     heading: "Information",
+    availability: "Available globally.",
+    application:
+      "Full client list and commercial portfolio available upon request.",
     bio: [
       {
         _type: "block",
@@ -79,14 +96,27 @@ async function seedSingletons() {
             _key: "bio0a",
             marks: [],
             text:
-              "With the ability to execute distinctive projects, Tylen's work " +
-              "has led him to collaborate with global brands such as Sony, " +
-              "Salomon, Turo and more. Having majored in design, his creative " +
-              "practice is deeply informed by the arts, bringing a unique " +
-              "approach to every project.",
+              "Tylen is a cinematographer & editor who delivers creative visuals " +
+              "rooted in purpose-driven storytelling. Combining his academic " +
+              "background in advertising and cinematography, he blends the " +
+              "intersection between thoughtful compositions with a distinct " +
+              "visual language.",
           },
         ],
       },
+    ],
+    clients: [
+      "Ben Key (New West 199X)",
+      "Crave",
+      "Curves by Sean Brown",
+      "Dine Alone Records",
+      "Finn Wolfhard",
+      "Harry Rosen",
+      "Salomon",
+      "Slushy Noobz",
+      "Sony Music Group",
+      "Tridel",
+      "Turo",
     ],
   });
 

@@ -121,11 +121,14 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
 export const INFO_PAGE_QUERY = defineQuery(`
   *[_id == "infoPage"][0] {
     heading,
+    availability,
+    application,
     bio[] {
       ...,
       _type == "inlineImage" => { ${IMAGE_FRAGMENT}, caption },
       markDefs[] { ... }
     },
+    readMoreUrl,
     portrait { ${IMAGE_FRAGMENT} },
     clients,
     seo { title, description, noIndex, image { ${IMAGE_FRAGMENT} } }

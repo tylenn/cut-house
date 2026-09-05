@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import { InfoOverlay } from "@/components/InfoOverlay";
 import { InfoSheet } from "@/components/InfoSheet";
 
@@ -12,7 +14,9 @@ import { InfoSheet } from "@/components/InfoSheet";
 export default function InterceptedInfo() {
   return (
     <InfoOverlay mode="modal">
-      <InfoSheet />
+      <Suspense fallback={null}>
+        <InfoSheet />
+      </Suspense>
     </InfoOverlay>
   );
 }

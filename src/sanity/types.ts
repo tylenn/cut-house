@@ -93,7 +93,10 @@ export type InfoPage = {
   _updatedAt: string;
   _rev: string;
   heading?: string;
+  availability?: string;
+  application?: string;
   bio?: RichText;
+  readMoreUrl?: string;
   portrait?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -717,18 +720,24 @@ export type SITE_SETTINGS_QUERY_RESULT =
 
 // Source: src/sanity/lib/queries.ts
 // Variable: INFO_PAGE_QUERY
-// Query: *[_id == "infoPage"][0] {    heading,    bio[] {      ...,      _type == "inlineImage" => {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions, caption },      markDefs[] { ... }    },    portrait {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions },    clients,    seo { title, description, noIndex, image {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions } }  }
+// Query: *[_id == "infoPage"][0] {    heading,    availability,    application,    bio[] {      ...,      _type == "inlineImage" => {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions, caption },      markDefs[] { ... }    },    readMoreUrl,    portrait {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions },    clients,    seo { title, description, noIndex, image {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions } }  }
 export type INFO_PAGE_QUERY_RESULT =
   | {
       heading: null;
+      availability: null;
+      application: null;
       bio: null;
+      readMoreUrl: null;
       portrait: null;
       clients: null;
       seo: null;
     }
   | {
       heading: null;
+      availability: null;
+      application: null;
       bio: null;
+      readMoreUrl: null;
       portrait: null;
       clients: null;
       seo: {
@@ -747,6 +756,8 @@ export type INFO_PAGE_QUERY_RESULT =
     }
   | {
       heading: string | null;
+      availability: string | null;
+      application: string | null;
       bio: Array<
         | {
             children?: Array<{
@@ -780,6 +791,7 @@ export type INFO_PAGE_QUERY_RESULT =
             markDefs: null;
           }
       > | null;
+      readMoreUrl: string | null;
       portrait: {
         asset: SanityImageAssetReference | null;
         hotspot: SanityImageHotspot | null;
@@ -815,6 +827,6 @@ declare module "@sanity/client" {
     '\n  *[_type == "project" && defined(slug.current)].slug.current\n': PROJECT_SLUGS_QUERY_RESULT;
     '\n  *[_type == "project" && hidden != true && defined(slug.current)] {\n    "slug": slug.current,\n    _updatedAt\n  }\n': SITEMAP_QUERY_RESULT;
     '\n  *[_id == "siteSettings"][0] {\n    title,\n    tagline,\n    description,\n    email,\n    socialLinks[] { _key, label, url },\n    lettermark { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    ogImage { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    "resumeUrl": resume.asset->url\n  }\n': SITE_SETTINGS_QUERY_RESULT;
-    '\n  *[_id == "infoPage"][0] {\n    heading,\n    bio[] {\n      ...,\n      _type == "inlineImage" => { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n, caption },\n      markDefs[] { ... }\n    },\n    portrait { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    clients,\n    seo { title, description, noIndex, image { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n } }\n  }\n': INFO_PAGE_QUERY_RESULT;
+    '\n  *[_id == "infoPage"][0] {\n    heading,\n    availability,\n    application,\n    bio[] {\n      ...,\n      _type == "inlineImage" => { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n, caption },\n      markDefs[] { ... }\n    },\n    readMoreUrl,\n    portrait { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    clients,\n    seo { title, description, noIndex, image { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n } }\n  }\n': INFO_PAGE_QUERY_RESULT;
   }
 }

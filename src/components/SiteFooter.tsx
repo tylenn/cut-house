@@ -5,7 +5,10 @@ type Link = { _key: string; label: string | null; url: string | null };
 /** Mobile only — on desktop the copyright lives at the foot of the rail. */
 export function SiteFooter({ links }: { links: Link[] }) {
   return (
-    <footer className="px-(--spacing-edge) py-8 md:hidden">
+    <footer
+      className="stagger-rail px-(--spacing-edge) py-8 md:hidden"
+      style={{ "--i": 4 } as React.CSSProperties}
+    >
       {links.length ? (
         <ul className="mb-6">
           {links.map((link) => (

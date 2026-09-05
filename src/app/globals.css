@@ -21,7 +21,7 @@
   --text-meta--line-height: 1.4;
   --text-body: 0.8125rem;
   --text-body--line-height: 1.55;
-  --text-title: 1.25rem;
+  --text-title: 1.125rem;
   --text-title--line-height: 1.25;
   --text-display: 2.75rem;
   --text-display--line-height: 1;
@@ -29,7 +29,7 @@
   --spacing-rail: 33.333%;
   --spacing-gutter: 2px;
   /* The work grid breathes more than the hairline gutter used elsewhere. */
-  --spacing-grid: 1.25rem;
+  --spacing-grid: 0.75rem;
   --spacing-edge: 1.75rem;
 
   /* Motion. One easing for entrances, one for firmer mechanical moves. */
@@ -37,6 +37,7 @@
   --ease-in-out-firm: cubic-bezier(0.65, 0, 0.35, 1);
   --duration-fast: 180ms;
   --duration-base: 320ms;
+  --duration-enter: 480ms;
   --duration-slow: 620ms;
 }
 
@@ -89,6 +90,112 @@
   }
 }
 
+@keyframes blur-in {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes info-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes info-content-in {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+@keyframes project-from-grid {
+  from {
+    opacity: 0.9;
+    transform: translate3d(var(--enter-tx, 0), var(--enter-ty, 0), 0)
+      scale(var(--enter-sx, 1), var(--enter-sy, 1));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes project-adjacent-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rail-in {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes enter-in {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translate3d(0, 28px, 0);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+@keyframes project-stagger-in {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+@keyframes project-in {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
 @layer utilities {
   .animate-rise-in {
     animation: rise-in var(--duration-slow) var(--ease-out-soft) both;
@@ -98,10 +205,65 @@
     animation: fade-in var(--duration-base) var(--ease-out-soft) both;
   }
 
-  /* Grid tiles come up in sequence. The index is set inline as --i. */
+  .animate-blur-in {
+    animation: blur-in var(--duration-slow) var(--ease-out-soft) both;
+  }
+
+  .animate-info-overlay-in {
+    animation: info-overlay-in var(--duration-base) var(--ease-out-soft) both;
+  }
+
+  .animate-info-content-in {
+    animation: info-content-in var(--duration-base) var(--ease-out-soft) both;
+    animation-delay: 100ms;
+  }
+
+  .animate-info-close-in {
+    animation: info-content-in var(--duration-base) var(--ease-out-soft) both;
+    animation-delay: 140ms;
+  }
+
+  .animate-project-in {
+    transform-origin: 50% 0;
+    animation: project-in var(--duration-slow) var(--ease-out-soft) both;
+  }
+
+  .project-hero-enter.animate-project-from-grid {
+    transform-origin: center;
+    will-change: transform, opacity;
+    animation: project-from-grid var(--duration-slow) var(--ease-out-soft) both;
+  }
+
+  .project-hero-enter.animate-project-adjacent-in {
+    transform-origin: 50% 0;
+    will-change: transform, opacity;
+    animation: project-adjacent-in var(--duration-base) var(--ease-out-soft)
+      both;
+  }
+
+  .animate-project-stagger {
+    will-change: transform, opacity;
+    animation: project-stagger-in var(--duration-base) var(--ease-out-soft) both;
+    animation-delay: var(--enter-delay, 0ms);
+  }
+
+  /* Grid tiles: blur, rise, and stagger by index. */
   .stagger-child {
+    will-change: transform, opacity;
+    animation: enter-in var(--duration-enter) var(--ease-out-soft) both;
+    animation-delay: calc(var(--i, 0) * 45ms);
+  }
+
+  /* Rail chrome and footer: opacity only, no vertical travel. */
+  .stagger-rail {
+    animation: rail-in var(--duration-base) var(--ease-out-soft) both;
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+
+  /* Credit rows on a project: a slower cascade so each pair reads as its own beat. */
+  .stagger-credits {
     animation: rise-in var(--duration-slow) var(--ease-out-soft) both;
-    animation-delay: calc(var(--i, 0) * 55ms);
+    animation-delay: calc(140ms + var(--i, 0) * 90ms);
   }
 }
 

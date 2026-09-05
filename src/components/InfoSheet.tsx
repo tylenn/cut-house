@@ -1,7 +1,6 @@
 import { PortableText } from "@/components/PortableText";
 import { SanityImage } from "@/components/SanityImage";
-import { sanityFetch } from "@/sanity/lib/live";
-import { INFO_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
+import { getInfoSheetData } from "@/sanity/lib/info";
 
 /**
  * The contents of the information sheet.
@@ -9,41 +8,37 @@ import { INFO_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
  * Shared by the standalone /info page and the intercepted overlay so the two
  * cannot drift. It fetches its own data rather than taking props: both callers
  * would otherwise repeat the same two queries verbatim.
+ *
+ * Layout matches the client's mockup: Contact, Application, Description,
+ * Clients — no page title, socials live in the footer.
  */
 export async function InfoSheet() {
-  const [{ data: info }, { data: settings }] = await Promise.all([
-    sanityFetch({ query: INFO_PAGE_QUERY }),
-    sanityFetch({ query: SITE_SETTINGS_QUERY }),
-  ]);
-
-  const links = settings?.socialLinks ?? [];
+  const { info, settings } = await getInfoSheetData();
 
   // Every section below is conditional, so an unpopulated infoPage renders a
   // blank sheet — which reads as a broken overlay rather than as empty content.
   // The grid says so out loud in the same situation; this echoes it without
   // repeating its exact wording, since both are on screen at once.
   const isEmpty =
-    !info?.heading &&
+    !settings?.email &&
+    !info?.availability &&
+    !info?.application &&
     !info?.bio?.length &&
     !info?.clients?.length &&
     !info?.portrait?.asset &&
-    !settings?.email &&
-    !settings?.resumeUrl &&
-    links.length === 0;
+    !settings?.resumeUrl;
 
   if (isEmpty) {
     return (
-      <p className="text-(--color-ink-muted)">Nothing here yet.</p>
+      <p className="animate-info-content-in text-(--color-ink-muted)">
+        Nothing here yet.
+      </p>
     );
   }
 
   return (
-    <div className="max-w-[68ch] md:pl-0">
-      {info?.heading ? (
-        <h1 className="mb-8 font-semibold">{info.heading}</h1>
-      ) : null}
-
-      {settings?.email || links.length ? (
+    <div className="animate-info-content-in max-w-[68ch] md:pl-0">
+      {settings?.email || info?.availability ? (
         <section className="mb-8">
           <h2 className="font-semibold">Contact</h2>
           {settings?.email ? (
@@ -54,17 +49,42 @@ export async function InfoSheet() {
               {settings.email}
             </a>
           ) : null}
-          {links.map((link) => (
+          {info?.availability ? <p>{info.availability}</p> : null}
+        </section>
+      ) : null}
+
+      {info?.application ? (
+        <section className="mb-8">
+          <h2 className="font-semibold">Application</h2>
+          <p>{info.application}</p>
+        </section>
+      ) : null}
+
+      {info?.bio?.length || info?.readMoreUrl ? (
+        <section className="mb-8">
+          <h2 className="font-semibold">Description</h2>
+          {info?.bio?.length ? <PortableText value={info.bio} /> : null}
+          {info?.readMoreUrl ? (
             <a
-              key={link._key}
-              href={link.url ?? "#"}
+              href={info.readMoreUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-(--color-ink-muted) transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
+              className="mt-1 inline-block text-(--color-ink-muted) transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
             >
-              {link.label}
+              read more
             </a>
-          ))}
+          ) : null}
+        </section>
+      ) : null}
+
+      {info?.clients?.length ? (
+        <section className="mb-8">
+          <h2 className="font-semibold">Clients</h2>
+          <ul>
+            {info.clients.map((name) => (
+              <li key={name}>{name}</li>
+            ))}
+          </ul>
         </section>
       ) : null}
 
@@ -76,24 +96,6 @@ export async function InfoSheet() {
             className="h-auto w-full"
           />
         </div>
-      ) : null}
-
-      {info?.bio?.length ? (
-        <section className="mb-8">
-          <h2 className="mb-1 font-semibold">Description</h2>
-          <PortableText value={info.bio} />
-        </section>
-      ) : null}
-
-      {info?.clients?.length ? (
-        <section className="mb-8">
-          <h2 className="mb-1 font-semibold">Clients</h2>
-          <ul>
-            {info.clients.map((name) => (
-              <li key={name}>{name}</li>
-            ))}
-          </ul>
-        </section>
       ) : null}
 
       {settings?.resumeUrl ? (
