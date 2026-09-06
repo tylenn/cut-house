@@ -20,7 +20,7 @@ export function Wordmark({
   return (
     <TransitionLink
       href="/"
-      className={`block text-(length:--text-wordmark) leading-(--text-wordmark--line-height) font-semibold tracking-[-0.02em] ${className}`}
+      className={`block text-(length:--text-wordmark) leading-(--text-wordmark--line-height) font-regular tracking-[-0.02em] ${className}`}
     >
       {label}
     </TransitionLink>
