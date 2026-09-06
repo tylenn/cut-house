@@ -3,8 +3,6 @@
 import { useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import { TransitionLink } from "@/components/TransitionLink";
-
 type Props = {
   children: React.ReactNode;
   /**
@@ -17,6 +15,8 @@ type Props = {
    * going back would leave the site, so dismiss navigates to the index.
    */
   mode?: "page" | "modal";
+  /** Override dismiss — used by the preview stage so it does not leave /preview. */
+  onDismiss?: () => void;
 };
 
 /**
@@ -27,16 +27,20 @@ type Props = {
  * The grid behind stays in the DOM and is treated by CSS: ghosted almost to
  * white on desktop with a light blur, genuinely blurred on mobile so
  * colour bleeds through.
+ *
+ * There is no close control. A click anywhere that is not a link dismisses
+ * it; Escape does the same. A drag-select is left alone so copy still works.
+ * The sheet is fixed to the viewport so the rail and footer are dismiss targets too.
  */
-export function InfoOverlay({ children, mode = "page" }: Props) {
+export function InfoOverlay({ children, mode = "page", onDismiss }: Props) {
   const router = useRouter();
 
   const dismiss = useCallback(() => {
-    if (mode === "modal") router.back();
+    if (onDismiss) onDismiss();
+    else if (mode === "modal") router.back();
     else router.push("/");
-  }, [mode, router]);
+  }, [mode, onDismiss, router]);
 
-  // Escape closes it, the way any overlay should.
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") dismiss();
@@ -45,9 +49,6 @@ export function InfoOverlay({ children, mode = "page" }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [dismiss]);
 
-  const closeClassName =
-    "fixed top-4 left-1/2 z-30 -translate-x-1/2 cursor-pointer rounded-full bg-black/15 px-4 py-2 backdrop-blur-md transition-colors duration-(--duration-fast) hover:text-(--color-ink-muted) md:top-5.5 md:right-(--spacing-edge) md:left-auto md:translate-x-0 md:rounded-none md:bg-transparent md:px-0 md:py-0 md:underline md:underline-offset-2 md:backdrop-blur-none";
-
   const scrimClassName =
     "pointer-events-none fixed inset-0 bg-(--color-page)/80 backdrop-blur-xl md:bg-(--color-page)/88 md:backdrop-blur-[8px]";
   const animatedScrimClassName =
@@ -55,37 +56,27 @@ export function InfoOverlay({ children, mode = "page" }: Props) {
       ? scrimClassName
       : `animate-info-overlay-in ${scrimClassName}`;
 
-  const closeAnimationClassName = "animate-info-close-in";
+  const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest("a")) return;
+    if (window.getSelection()?.toString()) return;
+    dismiss();
+  };
+
+  const contentClassName =
+    "relative mx-auto max-w-[68ch] px-(--spacing-edge) py-16";
 
   return (
-    <div className="fixed inset-0 z-40 overflow-y-auto overscroll-contain touch-pan-y md:absolute md:z-20">
+    <div
+      className="fixed inset-0 z-40 overflow-y-auto overscroll-contain touch-pan-y"
+      onClick={onClick}
+    >
       {/* The scrim is what does the ghosting/blurring of the grid underneath.
           Pointer-events off so it cannot steal the pan that scrolls this sheet. */}
       <div aria-hidden className={animatedScrimClassName} />
 
-      <div className="relative px-(--spacing-edge) py-16 md:px-0">{children}</div>
-
-      {/* Desktop: sits where the nav is. Mobile: a pill at the top of the sheet.
-
-          A button when intercepted, because the action is "go back", not "go to
-          the index" — and a real link otherwise, so the standalone page keeps
-          middle-click and open-in-new-tab. */}
-      {mode === "modal" ? (
-        <button
-          type="button"
-          onClick={dismiss}
-          className={`${closeClassName} ${closeAnimationClassName}`}
-        >
-          close
-        </button>
-      ) : (
-        <TransitionLink
-          href="/"
-          className={`${closeClassName} ${closeAnimationClassName}`}
-        >
-          close
-        </TransitionLink>
-      )}
+      <div className={contentClassName}>{children}</div>
     </div>
   );
 }

@@ -14,8 +14,7 @@
   --color-rule: #e6e6e6;
   --color-hover: #e8e8e8;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Helvetica Neue",
-    Helvetica, Arial, sans-serif;
+  --font-sans: Helvetica, "Helvetica Neue", Arial, sans-serif;
 
   --text-meta: 0.6875rem;
   --text-meta--line-height: 1.4;
@@ -25,20 +24,43 @@
   --text-title--line-height: 1.25;
   --text-display: 2.75rem;
   --text-display--line-height: 1;
+  --text-wordmark: 2.65rem;
+  --text-wordmark--line-height: 1;
 
   --spacing-rail: 33.333%;
   --spacing-gutter: 2px;
   /* The work grid breathes more than the hairline gutter used elsewhere. */
   --spacing-grid: 0.75rem;
   --spacing-edge: 1.75rem;
+  --site-opening-y: 50dvh;
 
-  /* Motion. One easing for entrances, one for firmer mechanical moves. */
+  /* Motion. Page transitions use the page tokens; UI chrome uses the rest. */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-page: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-in-out-firm: cubic-bezier(0.65, 0, 0.35, 1);
   --duration-fast: 180ms;
   --duration-base: 320ms;
   --duration-enter: 480ms;
   --duration-slow: 620ms;
+  --duration-page: 540ms;
+  --duration-home-return: 1200ms;
+  --duration-project: 1100ms;
+  --duration-grid-enter: 1300ms;
+  --duration-grid-rail: 950ms;
+  --duration-opening-grid: 900ms;
+  --stagger-opening-grid-step: 65ms;
+  --stagger-grid-step: 115ms;
+  --duration-opening-chrome: 420ms;
+  --stagger-opening-chrome-step: 40ms;
+  --delay-opening-title-in: 480ms;
+  --duration-opening-title-in: 1400ms;
+  --delay-opening-tagline-in: 2000ms;
+  --duration-opening-tagline-in: 3600ms;
+  --delay-opening-tagline-out: 6000ms;
+  --duration-opening-tagline-out: 700ms;
+  --ease-opening-tagline: cubic-bezier(0.12, 1, 0.28, 1);
+  --ease-project: cubic-bezier(0.17, 1, 0.28, 1);
+  --ease-grid: cubic-bezier(0.17, 1, 0.28, 1);
 }
 
 @layer base {
@@ -123,33 +145,10 @@
   }
 }
 
-@keyframes project-from-grid {
-  from {
-    opacity: 0.9;
-    transform: translate3d(var(--enter-tx, 0), var(--enter-ty, 0), 0)
-      scale(var(--enter-sx, 1), var(--enter-sy, 1));
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes project-adjacent-in {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 24px, 0) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 @keyframes rail-in {
   from {
     opacity: 0;
-    filter: blur(4px);
+    filter: blur(6px);
   }
   to {
     opacity: 1;
@@ -158,6 +157,64 @@
 }
 
 @keyframes enter-in {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translate3d(0, 26px, 0);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+@keyframes home-return-in {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes site-splash-title-in {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes site-splash-tagline-in {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    filter: blur(14px);
+  }
+  35% {
+    opacity: 0.15;
+    filter: blur(10px);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes site-splash-tagline-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes site-grid-in {
   from {
     opacity: 0;
     filter: blur(10px);
@@ -173,21 +230,8 @@
 @keyframes project-stagger-in {
   from {
     opacity: 0;
-    filter: blur(6px);
-    transform: translate3d(0, 12px, 0);
-  }
-  to {
-    opacity: 1;
-    filter: blur(0);
-    transform: none;
-  }
-}
-
-@keyframes project-in {
-  from {
-    opacity: 0;
     filter: blur(8px);
-    transform: translateY(18px) scale(0.97);
+    transform: translate3d(0, 18px, 0);
   }
   to {
     opacity: 1;
@@ -210,54 +254,63 @@
   }
 
   .animate-info-overlay-in {
-    animation: info-overlay-in var(--duration-base) var(--ease-out-soft) both;
+    animation: info-overlay-in var(--duration-page) var(--ease-page) both;
   }
 
   .animate-info-content-in {
-    animation: info-content-in var(--duration-base) var(--ease-out-soft) both;
-    animation-delay: 100ms;
-  }
-
-  .animate-info-close-in {
-    animation: info-content-in var(--duration-base) var(--ease-out-soft) both;
+    animation: info-content-in var(--duration-page) var(--ease-page) both;
     animation-delay: 140ms;
-  }
-
-  .animate-project-in {
-    transform-origin: 50% 0;
-    animation: project-in var(--duration-slow) var(--ease-out-soft) both;
-  }
-
-  .project-hero-enter.animate-project-from-grid {
-    transform-origin: center;
-    will-change: transform, opacity;
-    animation: project-from-grid var(--duration-slow) var(--ease-out-soft) both;
-  }
-
-  .project-hero-enter.animate-project-adjacent-in {
-    transform-origin: 50% 0;
-    will-change: transform, opacity;
-    animation: project-adjacent-in var(--duration-base) var(--ease-out-soft)
-      both;
   }
 
   .animate-project-stagger {
     will-change: transform, opacity;
-    animation: project-stagger-in var(--duration-base) var(--ease-out-soft) both;
+    animation: project-stagger-in var(--duration-project) var(--ease-project) both;
     animation-delay: var(--enter-delay, 0ms);
   }
 
-  /* Grid tiles: blur, rise, and stagger by index. */
-  .stagger-child {
-    will-change: transform, opacity;
-    animation: enter-in var(--duration-enter) var(--ease-out-soft) both;
-    animation-delay: calc(var(--i, 0) * 45ms);
+  /* Opening sequence: splash → grid stagger → nav/footer. Once per tab. */
+  html[data-site-intro="splash"] main {
+    opacity: 0;
+    pointer-events: none;
   }
 
-  /* Rail chrome and footer: opacity only, no vertical travel. */
-  .stagger-rail {
-    animation: rail-in var(--duration-base) var(--ease-out-soft) both;
-    animation-delay: calc(var(--i, 0) * 40ms);
+  html[data-site-intro="splash"] .site-chrome-nav,
+  html[data-site-intro="grid"] .site-chrome-nav,
+  html[data-site-intro="splash"] .site-chrome-meta,
+  html[data-site-intro="grid"] .site-chrome-meta,
+  html[data-site-intro="grid"] .site-chrome-mobile,
+  html[data-site-intro="splash"] .site-chrome-footer,
+  html[data-site-intro="grid"] .site-chrome-footer {
+    visibility: hidden;
+  }
+
+  html[data-site-intro="splash"] .site-opening-brand .site-wordmark,
+  html[data-site-intro="splash"] .site-opening-brand > a,
+  html[data-site-intro="splash"] .site-opening-mobile-name {
+    animation: site-splash-title-in var(--duration-opening-title-in)
+      var(--ease-page) var(--delay-opening-title-in) both;
+  }
+
+  html.site-intro-grid .stagger-child,
+  html[data-site-intro="grid"] .stagger-child,
+  html[data-site-intro="chrome"] .stagger-child {
+    will-change: transform, opacity;
+    animation: site-grid-in var(--duration-opening-grid) var(--ease-grid) both;
+    animation-delay: calc(var(--i, 0) * var(--stagger-opening-grid-step));
+  }
+
+  html[data-site-intro="chrome"] .stagger-rail:not(.site-opening-brand),
+  html[data-site-intro="chrome"] .site-chrome-footer {
+    animation: rail-in var(--duration-opening-chrome) var(--ease-page) both;
+    animation-delay: calc(var(--i, 0) * var(--stagger-opening-chrome-step));
+  }
+
+  html[data-site-intro="chrome"] .site-opening-brand.stagger-rail {
+    animation: none;
+  }
+
+  .animate-home-return {
+    animation: home-return-in var(--duration-home-return) var(--ease-page) both;
   }
 
   /* Credit rows on a project: a slower cascade so each pair reads as its own beat. */
@@ -265,6 +318,97 @@
     animation: rise-in var(--duration-slow) var(--ease-out-soft) both;
     animation-delay: calc(140ms + var(--i, 0) * 90ms);
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Site opening — wordmark in the rail, tagline centered on screen, then grid.
+   --------------------------------------------------------------------------- */
+.site-opening-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  background: var(--color-page);
+  pointer-events: none;
+}
+
+html[data-site-intro="splash"] .site-opening-backdrop {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  html[data-site-intro="splash"] .site-opening-backdrop {
+    left: var(--spacing-rail);
+  }
+
+  /* Nav and copyright are hidden during splash — keep them out of flow so the
+     wordmark can sit at a true 50vh center, aligned with the tagline. */
+  html[data-site-intro="splash"] .site-chrome-nav,
+  html[data-site-intro="splash"] .site-chrome-meta {
+    position: absolute;
+    visibility: hidden;
+    overflow: hidden;
+    width: 0;
+    height: 0;
+  }
+
+  html[data-site-intro="splash"] .site-opening-brand {
+    position: fixed;
+    top: var(--site-opening-y);
+    left: 0;
+    z-index: 50;
+    width: var(--spacing-rail);
+    translate: 0 -50%;
+  }
+}
+
+html[data-site-intro="splash"] .site-chrome {
+  position: relative;
+  z-index: 50;
+}
+
+.site-opening-brand {
+  overflow: visible;
+}
+
+@media (min-width: 768px) {
+  .site-opening-brand {
+    position: absolute;
+    top: var(--site-opening-y);
+    right: 0;
+    left: 0;
+    translate: 0 -50%;
+  }
+}
+
+.site-opening-tagline {
+  position: fixed;
+  top: var(--site-opening-y);
+  left: 50%;
+  z-index: 45;
+  display: none;
+  width: min(68ch, calc(100% - 2 * var(--spacing-edge)));
+  margin: 0;
+  translate: -50% -50%;
+  text-align: center;
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+  color: var(--color-ink-muted);
+  pointer-events: none;
+}
+
+html[data-site-intro="splash"] .site-opening-tagline {
+  display: block;
+  will-change: clip-path, opacity, filter;
+  animation:
+    site-splash-tagline-in var(--duration-opening-tagline-in)
+      var(--ease-opening-tagline) var(--delay-opening-tagline-in) both,
+    site-splash-tagline-out var(--duration-opening-tagline-out) var(--ease-page)
+      var(--delay-opening-tagline-out) forwards;
+}
+
+html[data-site-intro="splash"] .site-opening-menu-toggle {
+  visibility: hidden;
 }
 
 /* ---------------------------------------------------------------------------
@@ -342,8 +486,8 @@
    --------------------------------------------------------------------------- */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: var(--duration-base);
-  animation-timing-function: var(--ease-out-soft);
+  animation-duration: var(--duration-page);
+  animation-timing-function: var(--ease-page);
 }
 
 /* The rail is identical on every page; holding it still stops the wordmark and

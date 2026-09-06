@@ -3,9 +3,8 @@ import { notFound } from "next/navigation";
 
 import { JsonLd } from "@/components/JsonLd";
 import { PortableText } from "@/components/PortableText";
-import { ProjectEnterLink } from "@/components/ProjectEnterLink";
-import { ProjectHeroEnter } from "@/components/ProjectHeroEnter";
 import { ProjectPageStagger } from "@/components/ProjectPageStagger";
+import { TransitionLink } from "@/components/TransitionLink";
 import { workHref } from "@/lib/routes";
 import { pageMetadata, projectJsonLd, projectShareImageUrl } from "@/lib/seo";
 import { PRINCIPAL } from "@/lib/site";
@@ -83,24 +82,26 @@ export default async function ProjectPage({ params }: Props) {
     <>
       <JsonLd data={projectJsonLd(project, `/work/${slug}`, shareImage)} />
       <ProjectPageStagger>
-        <ProjectHeroEnter>
         {playbackId ? (
-          <VideoPlayer
-            playbackId={playbackId}
-            title={project.title ?? undefined}
-            poster={muxPosterUrl(playbackId, { width: 1600 })}
-            aspectRatio={aspectRatio}
-          />
+          <div data-project-stagger>
+            <VideoPlayer
+              playbackId={playbackId}
+              title={project.title ?? undefined}
+              poster={muxPosterUrl(playbackId, { width: 1600 })}
+              aspectRatio={aspectRatio}
+            />
+          </div>
         ) : project.poster?.asset ? (
-          <SanityImage
-            image={project.poster}
-            alt={project.title ?? ""}
-            sizes="(max-width: 768px) 100vw, 66vw"
-            priority
-            className="h-auto w-full"
-          />
+          <div data-project-stagger>
+            <SanityImage
+              image={project.poster}
+              alt={project.title ?? ""}
+              sizes="(max-width: 768px) 100vw, 66vw"
+              priority
+              className="h-auto w-full"
+            />
+          </div>
         ) : null}
-      </ProjectHeroEnter>
 
       <header className="px-(--spacing-edge) pt-2 md:px-0">
         <h1
@@ -112,40 +113,48 @@ export default async function ProjectPage({ params }: Props) {
         </h1>
 
         {project.roles?.length || project.credits?.length ? (
-          <dl className="mt-3 max-w-[230px] text-(--color-ink-muted)">
+          <div className="mt-3 text-(--color-ink-muted)">
             {/* His row first, and in full ink: the same role/name shape as
                 everyone below, but it is the one the visitor came for. */}
             {project.roles?.length ? (
-              <div data-project-stagger className="flex justify-between gap-4">
-                <dt>{project.roles.join(", ")}</dt>
-                <dd className="text-right text-(--color-ink)">{PRINCIPAL}</dd>
-              </div>
+              <dl>
+                <div data-project-stagger className="flex items-start gap-6">
+                  <dt className="min-w-0">{project.roles.join(", ")}</dt>
+                  <dd className="shrink-0 whitespace-nowrap text-(--color-ink)">
+                    {PRINCIPAL}
+                  </dd>
+                </div>
+              </dl>
             ) : null}
 
-            {project.credits?.map((entry) => (
-              <div
-                key={entry._key}
-                data-project-stagger
-                className="flex justify-between gap-4"
-              >
-                <dt>{entry.role}</dt>
-                <dd className="text-right">
-                  {entry.url ? (
-                    <a
-                      href={entry.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
-                    >
-                      {entry.name}
-                    </a>
-                  ) : (
-                    entry.name
-                  )}
-                </dd>
-              </div>
-            ))}
-          </dl>
+            {project.credits?.length ? (
+              <dl className={project.roles?.length ? "mt-3 max-w-[230px]" : "max-w-[230px]"}>
+                {project.credits.map((entry) => (
+                  <div
+                    key={entry._key}
+                    data-project-stagger
+                    className="flex items-start gap-6"
+                  >
+                    <dt className="min-w-0">{entry.role}</dt>
+                    <dd className="shrink-0 whitespace-nowrap">
+                      {entry.url ? (
+                        <a
+                          href={entry.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
+                        >
+                          {entry.name}
+                        </a>
+                      ) : (
+                        entry.name
+                      )}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+          </div>
         ) : null}
 
         {project.externalUrl ? (
@@ -222,30 +231,28 @@ export default async function ProjectPage({ params }: Props) {
           className="mt-16 flex justify-between gap-8 px-(--spacing-edge) md:px-0"
         >
           {previous?.slug ? (
-            <ProjectEnterLink
+            <TransitionLink
               href={workHref(previous.slug)}
-              enter="adjacent"
               className="group text-(--color-ink-muted) transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
             >
               <span className="inline-block transition-transform duration-(--duration-base) ease-(--ease-out-soft) group-hover:-translate-x-1">
                 ←
               </span>{" "}
               {previous.title}
-            </ProjectEnterLink>
+            </TransitionLink>
           ) : (
             <span />
           )}
           {next?.slug ? (
-            <ProjectEnterLink
+            <TransitionLink
               href={workHref(next.slug)}
-              enter="adjacent"
               className="group text-right text-(--color-ink-muted) transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
             >
               {next.title}{" "}
               <span className="inline-block transition-transform duration-(--duration-base) ease-(--ease-out-soft) group-hover:translate-x-1">
                 →
               </span>
-            </ProjectEnterLink>
+            </TransitionLink>
           ) : (
             <span />
           )}

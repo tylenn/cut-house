@@ -2,7 +2,7 @@
 
 import { type ReactNode, useLayoutEffect, useRef } from "react";
 
-/** Milliseconds between each `[data-project-stagger]` block in document order. */
+/** Milliseconds between each `[data-info-stagger]` block in document order. */
 const STAGGER_MS = 130;
 const INITIAL_DELAY = 140;
 
@@ -11,12 +11,11 @@ type Props = {
 };
 
 /**
- * Stagger project-page blocks in document order — hero first, then title,
- * credits, body, and so on. Each `[data-project-stagger]` node gets the same
- * blur-and-rise entrance; only the delay steps down the page.
+ * Stagger info-sheet sections in document order — Contact, Application,
+ * Description, and so on.
  */
-export function ProjectPageStagger({ children }: Props) {
-  const ref = useRef<HTMLElement>(null);
+export function InfoPageStagger({ children }: Props) {
+  const ref = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const root = ref.current;
@@ -24,7 +23,7 @@ export function ProjectPageStagger({ children }: Props) {
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const blocks = root.querySelectorAll<HTMLElement>("[data-project-stagger]");
+    const blocks = root.querySelectorAll<HTMLElement>("[data-info-stagger]");
 
     blocks.forEach((block, index) => {
       const delay = INITIAL_DELAY + index * STAGGER_MS;
@@ -33,5 +32,5 @@ export function ProjectPageStagger({ children }: Props) {
     });
   }, []);
 
-  return <article ref={ref}>{children}</article>;
+  return <div ref={ref}>{children}</div>;
 }

@@ -1,3 +1,4 @@
+import { InfoPageStagger } from "@/components/InfoPageStagger";
 import { PortableText } from "@/components/PortableText";
 import { SanityImage } from "@/components/SanityImage";
 import { getInfoSheetData } from "@/sanity/lib/info";
@@ -30,16 +31,18 @@ export async function InfoSheet() {
 
   if (isEmpty) {
     return (
-      <p className="animate-info-content-in text-(--color-ink-muted)">
-        Nothing here yet.
-      </p>
+      <InfoPageStagger>
+        <p data-info-stagger className="text-(--color-ink-muted)">
+          Nothing here yet.
+        </p>
+      </InfoPageStagger>
     );
   }
 
   return (
-    <div className="animate-info-content-in max-w-[68ch] md:pl-0">
+    <InfoPageStagger>
       {settings?.email || info?.availability ? (
-        <section className="mb-8">
+        <section data-info-stagger className="mb-8">
           <h2 className="font-semibold">Contact</h2>
           {settings?.email ? (
             <a
@@ -54,14 +57,14 @@ export async function InfoSheet() {
       ) : null}
 
       {info?.application ? (
-        <section className="mb-8">
+        <section data-info-stagger className="mb-8">
           <h2 className="font-semibold">Application</h2>
           <p>{info.application}</p>
         </section>
       ) : null}
 
       {info?.bio?.length || info?.readMoreUrl ? (
-        <section className="mb-8">
+        <section data-info-stagger className="mb-8">
           <h2 className="font-semibold">Description</h2>
           {info?.bio?.length ? <PortableText value={info.bio} /> : null}
           {info?.readMoreUrl ? (
@@ -78,7 +81,7 @@ export async function InfoSheet() {
       ) : null}
 
       {info?.clients?.length ? (
-        <section className="mb-8">
+        <section data-info-stagger className="mb-8">
           <h2 className="font-semibold">Clients</h2>
           <ul>
             {info.clients.map((name) => (
@@ -89,7 +92,7 @@ export async function InfoSheet() {
       ) : null}
 
       {info?.portrait?.asset ? (
-        <div className="mb-8 max-w-sm">
+        <div data-info-stagger className="mb-8 max-w-sm">
           <SanityImage
             image={info.portrait}
             sizes="(max-width: 768px) 100vw, 40vw"
@@ -100,6 +103,7 @@ export async function InfoSheet() {
 
       {settings?.resumeUrl ? (
         <a
+          data-info-stagger
           href={settings.resumeUrl}
           target="_blank"
           rel="noopener noreferrer"
@@ -108,6 +112,6 @@ export async function InfoSheet() {
           Download resume
         </a>
       ) : null}
-    </div>
+    </InfoPageStagger>
   );
 }

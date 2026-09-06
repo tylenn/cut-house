@@ -6,7 +6,7 @@ type Link = { _key: string; label: string | null; url: string | null };
 export function SiteFooter({ links }: { links: Link[] }) {
   return (
     <footer
-      className="stagger-rail px-(--spacing-edge) py-8 md:hidden"
+      className="site-chrome site-chrome-footer stagger-rail px-(--spacing-edge) py-8 md:hidden"
       style={{ "--i": 4 } as React.CSSProperties}
     >
       {links.length ? (

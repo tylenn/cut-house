@@ -1,8 +1,9 @@
 import { JsonLd } from "@/components/JsonLd";
 import { Rail } from "@/components/Rail";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SiteOpening } from "@/components/SiteOpening";
 import { SetupNotice } from "@/components/SetupNotice";
-import { SITE_NAME } from "@/lib/site";
+import { SITE_NAME, resolveSiteTagline } from "@/lib/site";
 import { siteJsonLd } from "@/lib/seo";
 import { isPlaceholderProject } from "@/sanity/env";
 import { sanityFetch } from "@/sanity/lib/live";
@@ -21,9 +22,11 @@ export default async function SiteLayout({
   ]);
 
   const name = settings?.title ?? SITE_NAME;
+  const tagline = resolveSiteTagline(settings?.tagline);
 
   return (
     <>
+      <SiteOpening tagline={tagline} />
       {seoSettings ? <JsonLd data={siteJsonLd(seoSettings)} /> : null}
       <div className="md:flex md:min-h-screen">
         <Rail name={name} />

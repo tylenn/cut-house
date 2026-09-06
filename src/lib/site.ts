@@ -11,6 +11,22 @@ export const COPYRIGHT_HOLDER = "Cut House";
 /** Wordmark / browser-tab name. Lowercase on purpose. */
 export const SITE_NAME = "cut house";
 
+/** Fallback line under the name on the opening splash and in Sanity. */
+export const DEFAULT_TAGLINE =
+  "A global production company driven by culture";
+
+const LEGACY_TAGLINES = new Set([
+  "a global production services company",
+  "A global production services company",
+]);
+
+/** CMS tagline, with legacy seed copy mapped to the current default. */
+export function resolveSiteTagline(cmsTagline?: string | null): string {
+  const trimmed = cmsTagline?.trim();
+  if (!trimmed || LEGACY_TAGLINES.has(trimmed)) return DEFAULT_TAGLINE;
+  return trimmed;
+}
+
 /**
  * Fallback for <meta name="description">, Open Graph, and JSON-LD when Sanity
  * has not set a site description yet.

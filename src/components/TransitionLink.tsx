@@ -17,7 +17,7 @@ function usesViewTransition(href: Href) {
         ? href.pathname
         : null;
 
-  return path !== "/info" && !path?.startsWith("/work/");
+  return path !== "/info";
 }
 
 /**

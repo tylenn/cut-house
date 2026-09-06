@@ -61,7 +61,7 @@ async function seedSingletons() {
     _id: "siteSettings",
     _type: "siteSettings",
     title: "cut house",
-    tagline: "a global production services company",
+    tagline: "A global production company driven by culture",
     description:
       "Cut House is a global production services company. Cinematography and editing by Tylen — purpose-driven visuals for film, advertising, and commercial work.",
     email: "info@tylen.ca",

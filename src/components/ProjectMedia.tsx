@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 type Props = {
   /** Static frame. Always rendered; the loop fades in on top once it arrives. */
@@ -39,10 +39,11 @@ export function ProjectMedia({
   const [ready, setReady] = useState(false);
 
   const isVideo = loopUrl ? /\.(mp4|webm)($|\?)/i.test(loopUrl) : false;
+  const introSplash = useSiteIntroSplash();
 
   useEffect(() => {
     const frame = frameRef.current;
-    if (!frame || !loopUrl) return;
+    if (!frame || !loopUrl || introSplash) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -50,10 +51,6 @@ export function ProjectMedia({
       ([entry]) => {
         if (entry.isIntersecting) {
           setMounted(true);
-          videoRef.current?.play().catch(() => {
-            // Refused (low power mode, data saver). The poster underneath is a
-            // perfectly good resting state, so there is nothing to recover from.
-          });
         } else {
           videoRef.current?.pause();
         }
@@ -64,7 +61,14 @@ export function ProjectMedia({
 
     observer.observe(frame);
     return () => observer.disconnect();
-  }, [loopUrl]);
+  }, [loopUrl, introSplash]);
+
+  useEffect(() => {
+    if (!mounted || !isVideo) return;
+    videoRef.current?.play().catch(() => {
+      // Refused (low power mode, data saver). The poster underneath is fine.
+    });
+  }, [mounted, isVideo]);
 
   return (
     <div
@@ -95,7 +99,7 @@ export function ProjectMedia({
               muted
               loop
               playsInline
-              preload="none"
+              preload="metadata"
               autoPlay
               aria-hidden
               onLoadedData={() => setReady(true)}
@@ -118,4 +122,23 @@ export function ProjectMedia({
       ) : null}
     </div>
   );
+}
+
+/** True while the opening splash hides the grid — IO waits so tiles still mount. */
+function useSiteIntroSplash(): boolean {
+  return useSyncExternalStore(subscribeSiteIntroSplash, getSiteIntroSplash, () => false);
+}
+
+function getSiteIntroSplash(): boolean {
+  return document.documentElement.dataset.siteIntro === "splash";
+}
+
+function subscribeSiteIntroSplash(onStoreChange: () => void): () => void {
+  const root = document.documentElement;
+  const observer = new MutationObserver(onStoreChange);
+  observer.observe(root, {
+    attributes: true,
+    attributeFilter: ["data-site-intro"],
+  });
+  return () => observer.disconnect();
 }

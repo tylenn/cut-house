@@ -10,6 +10,7 @@ import {
 } from "@/lib/site";
 import { isPlaceholderProject, siteUrl } from "@/sanity/env";
 import { SanityLive } from "@/sanity/lib/live";
+import { SITE_INTRO_BOOTSTRAP } from "@/lib/site-intro";
 
 import "./globals.css";
 
@@ -76,8 +77,10 @@ export default async function RootLayout({
   const { isEnabled: isDraftMode } = await draftMode();
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
+        {/* Sets data-site-intro before paint on first home visit — see site-intro.ts. */}
+        <script dangerouslySetInnerHTML={{ __html: SITE_INTRO_BOOTSTRAP }} />
         {children}
         {/* Attaches sync tags per query so published edits appear without a deploy.
             Skipped while the project ID is still the placeholder, where it would

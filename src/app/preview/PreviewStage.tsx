@@ -73,8 +73,8 @@ export function PreviewStage() {
           </div>
 
           {info ? (
-            <InfoOverlay>
-              <div className="animate-info-content-in max-w-[68ch]">
+            <InfoOverlay onDismiss={() => setInfo(false)}>
+              <div className="animate-info-content-in">
                 <section className="mb-8">
                   <h2 className="font-semibold">Contact</h2>
                   <span className="block text-(--color-ink-muted)">info@tylen.ca</span>

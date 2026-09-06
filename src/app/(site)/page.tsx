@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { HomeReturn } from "@/components/HomeReturn";
 import { ProjectGrid } from "@/components/ProjectGrid";
 import { DEFAULT_DESCRIPTION, SITE_NAME } from "@/lib/site";
 import { sanityFetch } from "@/sanity/lib/live";
@@ -44,5 +45,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   const { data: projects } = await sanityFetch({ query: PROJECTS_QUERY });
 
-  return <ProjectGrid projects={projects ?? []} />;
+  return (
+    <HomeReturn>
+      <ProjectGrid projects={projects ?? []} />
+    </HomeReturn>
+  );
 }

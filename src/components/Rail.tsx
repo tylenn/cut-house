@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { TransitionLink } from "@/components/TransitionLink";
+import { formatSiteTitle } from "@/lib/site-intro";
 import { COPYRIGHT_HOLDER } from "@/lib/site";
 import { Wordmark } from "@/components/Wordmark";
 
@@ -13,7 +14,7 @@ const NAV = [
 ] as const;
 
 /**
- * Desktop: nav pinned top-left, wordmark vertically centred, copyright at the
+ * Desktop: nav pinned top-left, wordmark at 50vh in the rail, copyright at the
  * foot.
  *
  * Mobile: the rail collapses to a sticky bar and the nav moves behind a `+`
@@ -22,6 +23,7 @@ const NAV = [
 export function Rail({ name }: { name: string }) {
   const pathname = usePathname();
   const router = useRouter();
+  const mobileTitle = formatSiteTitle(name);
 
   // Warm the intercepted overlay so the sheet is not waiting on a cold fetch.
   useEffect(() => {
@@ -41,7 +43,7 @@ export function Rail({ name }: { name: string }) {
     <aside
       // Held still across navigations by ::view-transition-group(rail).
       style={{ viewTransitionName: "rail" }}
-      className="md:sticky md:top-0 md:flex md:h-screen md:w-(--spacing-rail) md:shrink-0 md:flex-col md:justify-between md:py-5"
+      className="site-chrome md:sticky md:top-0 md:relative md:h-screen md:w-(--spacing-rail) md:shrink-0 md:py-5"
     >
       {/* Mobile bar — the whole strip toggles the menu. Home is "projects"
           in the open nav, so the name is not a second, nested control. */}
@@ -51,19 +53,18 @@ export function Rail({ name }: { name: string }) {
         aria-expanded={open}
         aria-controls="mobile-nav"
         aria-label={open ? "Close menu" : "Open menu"}
-        className="stagger-rail bg-(--color-page)/90 sticky top-0 z-30 flex w-full cursor-pointer items-center justify-between px-(--spacing-edge) py-4 text-left backdrop-blur-md md:hidden"
+        className="site-chrome-mobile stagger-rail bg-(--color-page)/90 sticky top-0 z-30 flex w-full cursor-pointer items-start justify-between px-(--spacing-edge) py-4 text-left backdrop-blur-md md:hidden"
         style={{ "--i": 0 } as React.CSSProperties}
       >
-        <span className="text-(length:--text-title) leading-(--text-title--line-height) font-extrabold tracking-[-0.02em]">
-          {name}
-        </span>
+        <div className="site-opening-brand min-w-0 flex-1">
+          <span className="site-opening-mobile-name text-(length:--text-title) leading-(--text-title--line-height) font-extrabold tracking-[-0.02em]">
+            {mobileTitle}
+          </span>
+        </div>
 
         <span
           aria-hidden
-          // 18px box (2px under the original 20px hit area). The glyph is
-          // narrower, so it is pulled 2px right: the plus's own edge lines
-          // up with the name's inset, not the box it is centred in.
-          className="relative -mr-0.5 size-[18px]"
+          className="site-opening-menu-toggle relative -mr-0.5 mt-0.5 size-[18px] shrink-0"
         >
           {/* Two strokes that rotate into an ×, rather than swapping glyphs. */}
           <span
@@ -80,7 +81,7 @@ export function Rail({ name }: { name: string }) {
       {/* Mobile menu: grid-rows 0fr -> 1fr animates height without a magic max-height. */}
       <div
         id="mobile-nav"
-        className="grid transition-[grid-template-rows] duration-(--duration-base) ease-(--ease-out-soft) md:hidden"
+        className="site-chrome-nav grid transition-[grid-template-rows] duration-(--duration-base) ease-(--ease-out-soft) md:hidden"
         style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
       >
         <nav className="overflow-hidden">
@@ -99,7 +100,7 @@ export function Rail({ name }: { name: string }) {
       </div>
 
       {/* Desktop nav */}
-      <nav className="hidden px-(--spacing-edge) md:block">
+      <nav className="site-chrome-nav hidden px-(--spacing-edge) md:block">
         {NAV.map((item, index) => (
           <TransitionLink
             key={item.href}
@@ -117,14 +118,14 @@ export function Rail({ name }: { name: string }) {
       </nav>
 
       <div
-        className="stagger-rail hidden px-(--spacing-edge) md:block"
+        className="site-opening-brand stagger-rail hidden px-(--spacing-edge) md:block"
         style={{ "--i": NAV.length } as React.CSSProperties}
       >
         <Wordmark name={name} />
       </div>
 
       <p
-        className="stagger-rail hidden px-(--spacing-edge) text-(length:--text-meta) text-(--color-ink-faint) md:block"
+        className="site-chrome-meta stagger-rail absolute right-0 bottom-0 left-0 hidden px-(--spacing-edge) text-(length:--text-meta) text-(--color-ink-faint) md:block"
         style={{ "--i": NAV.length + 1 } as React.CSSProperties}
       >
         © {new Date().getFullYear()} {COPYRIGHT_HOLDER}. All rights reserved.

@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
-import { ProjectEnterLink } from "@/components/ProjectEnterLink";
+import { TransitionLink } from "@/components/TransitionLink";
 import { workHref } from "@/lib/routes";
 
 export function ProjectCardLink({
@@ -16,18 +16,14 @@ export function ProjectCardLink({
   media: ReactNode;
   meta: ReactNode;
 }) {
-  const mediaRef = useRef<HTMLDivElement>(null);
-
   return (
-    <ProjectEnterLink
+    <TransitionLink
       href={workHref(slug)}
-      enter="grid"
-      mediaRef={mediaRef}
       className="stagger-child group block"
       style={{ "--i": index } as React.CSSProperties}
     >
-      <div ref={mediaRef}>{media}</div>
+      {media}
       {meta}
-    </ProjectEnterLink>
+    </TransitionLink>
   );
 }

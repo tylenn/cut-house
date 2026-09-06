@@ -24,7 +24,8 @@ export const siteSettings = defineType({
       title: "Tagline",
       type: "string",
       group: "general",
-      description: 'The line under the name — "a global production services company".',
+      description:
+        'The line under the name — "A global production company driven by culture".',
     }),
     defineField({
       name: "description",
