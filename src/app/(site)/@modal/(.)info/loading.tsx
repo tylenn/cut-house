@@ -6,7 +6,7 @@ export default function InterceptedInfoLoading() {
   return (
     <div
       aria-hidden
-      className="animate-info-overlay-in pointer-events-none fixed inset-0 z-40 bg-(--color-page)/80 backdrop-blur-xl md:bg-(--color-page)/88 md:backdrop-blur-[8px]"
+      className="animate-overlay-in pointer-events-none fixed inset-0 z-40 bg-(--color-page)/80 backdrop-blur-xl md:bg-(--color-page)/88 md:backdrop-blur-[8px]"
     />
   );
 }

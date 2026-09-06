@@ -1,4 +1,5 @@
 import { JsonLd } from "@/components/JsonLd";
+import { PageTransitionObserver } from "@/components/PageTransitionObserver";
 import { Rail } from "@/components/Rail";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteOpening } from "@/components/SiteOpening";
@@ -26,6 +27,7 @@ export default async function SiteLayout({
 
   return (
     <>
+      <PageTransitionObserver />
       <SiteOpening tagline={tagline} />
       {seoSettings ? <JsonLd data={siteJsonLd(seoSettings)} /> : null}
       <div className="md:flex md:min-h-screen">

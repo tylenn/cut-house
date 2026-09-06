@@ -83,7 +83,7 @@ export default async function ProjectPage({ params }: Props) {
       <JsonLd data={projectJsonLd(project, `/work/${slug}`, shareImage)} />
       <ProjectPageStagger>
         {playbackId ? (
-          <div data-project-stagger>
+          <div>
             <VideoPlayer
               playbackId={playbackId}
               title={project.title ?? undefined}
@@ -92,7 +92,7 @@ export default async function ProjectPage({ params }: Props) {
             />
           </div>
         ) : project.poster?.asset ? (
-          <div data-project-stagger>
+          <div>
             <SanityImage
               image={project.poster}
               alt={project.title ?? ""}
@@ -104,10 +104,7 @@ export default async function ProjectPage({ params }: Props) {
         ) : null}
 
       <header className="px-(--spacing-edge) pt-2 md:px-0">
-        <h1
-          data-project-stagger
-          className="text-(length:--text-title) leading-(--text-title--line-height) font-semibold"
-        >
+        <h1 className="text-(length:--text-title) leading-(--text-title--line-height) font-semibold">
           {project.title}
           {project.client ? ` — ${project.client}` : null}
         </h1>
@@ -118,7 +115,7 @@ export default async function ProjectPage({ params }: Props) {
                 everyone below, but it is the one the visitor came for. */}
             {project.roles?.length ? (
               <dl>
-                <div data-project-stagger className="flex items-start gap-6">
+                <div className="flex items-start gap-6">
                   <dt className="min-w-0">{project.roles.join(", ")}</dt>
                   <dd className="shrink-0 whitespace-nowrap text-(--color-ink)">
                     {PRINCIPAL}
@@ -130,11 +127,7 @@ export default async function ProjectPage({ params }: Props) {
             {project.credits?.length ? (
               <dl className={project.roles?.length ? "mt-3 max-w-[230px]" : "max-w-[230px]"}>
                 {project.credits.map((entry) => (
-                  <div
-                    key={entry._key}
-                    data-project-stagger
-                    className="flex items-start gap-6"
-                  >
+                  <div key={entry._key} className="flex items-start gap-6">
                     <dt className="min-w-0">{entry.role}</dt>
                     <dd className="shrink-0 whitespace-nowrap">
                       {entry.url ? (
@@ -159,7 +152,6 @@ export default async function ProjectPage({ params }: Props) {
 
         {project.externalUrl ? (
           <a
-            data-project-stagger
             href={project.externalUrl}
             target="_blank"
             rel="noopener noreferrer"
@@ -171,10 +163,7 @@ export default async function ProjectPage({ params }: Props) {
       </header>
 
       {project.body?.length ? (
-        <div
-          data-project-stagger
-          className="mt-8 max-w-[62ch] px-(--spacing-edge) md:px-0"
-        >
+        <div className="mt-8 max-w-[62ch] px-(--spacing-edge) md:px-0">
           <PortableText value={project.body} />
         </div>
       ) : null}
@@ -185,10 +174,7 @@ export default async function ProjectPage({ params }: Props) {
             const clipId = clip.video?.playbackId;
             if (!clipId) return null;
             return (
-              <figure
-                key={clip._key}
-                data-project-stagger
-              >
+              <figure key={clip._key}>
                 <VideoPlayer
                   playbackId={clipId}
                   title={clip.label ?? undefined}
@@ -209,7 +195,7 @@ export default async function ProjectPage({ params }: Props) {
       {project.gallery?.length ? (
         <div className="mt-10 grid grid-cols-1 gap-(--spacing-gutter) md:grid-cols-2">
           {project.gallery.map((still) => (
-            <figure key={still._key} data-project-stagger>
+            <figure key={still._key}>
               <SanityImage
                 image={still}
                 sizes="(max-width: 768px) 100vw, 45vw"
@@ -226,10 +212,7 @@ export default async function ProjectPage({ params }: Props) {
       ) : null}
 
       {previous || next ? (
-        <nav
-          data-project-stagger
-          className="mt-16 flex justify-between gap-8 px-(--spacing-edge) md:px-0"
-        >
+        <nav className="mt-16 flex justify-between gap-8 px-(--spacing-edge) md:px-0">
           {previous?.slug ? (
             <TransitionLink
               href={workHref(previous.slug)}

@@ -20,6 +20,8 @@
   --text-meta--line-height: 1.4;
   --text-body: 0.8125rem;
   --text-body--line-height: 1.55;
+  --text-opening-tagline: calc(var(--text-body) + 2pt);
+  --text-opening-tagline--line-height: 1.55;
   --text-title: 1.125rem;
   --text-title--line-height: 1.25;
   --text-display: 2.75rem;
@@ -34,33 +36,31 @@
   --spacing-edge: 1.75rem;
   --site-opening-y: 50dvh;
 
-  /* Motion. Page transitions use the page tokens; UI chrome uses the rest. */
+  /* UI micro-interactions (hover, toggles, scrubber). */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-page: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-in-out-firm: cubic-bezier(0.65, 0, 0.35, 1);
   --duration-fast: 180ms;
   --duration-base: 320ms;
-  --duration-enter: 480ms;
   --duration-slow: 620ms;
-  --duration-page: 540ms;
-  --duration-home-return: 1200ms;
-  --duration-project: 1100ms;
-  --duration-grid-enter: 1300ms;
-  --duration-grid-rail: 950ms;
-  --duration-opening-grid: 900ms;
-  --stagger-opening-grid-step: 65ms;
-  --stagger-grid-step: 115ms;
-  --duration-opening-chrome: 420ms;
-  --stagger-opening-chrome-step: 40ms;
-  --delay-opening-title-in: 480ms;
-  --duration-opening-title-in: 1400ms;
-  --delay-opening-tagline-in: 2000ms;
-  --duration-opening-tagline-in: 3600ms;
-  --delay-opening-tagline-out: 6000ms;
-  --duration-opening-tagline-out: 700ms;
-  --ease-opening-tagline: cubic-bezier(0.12, 1, 0.28, 1);
-  --ease-project: cubic-bezier(0.17, 1, 0.28, 1);
-  --ease-grid: cubic-bezier(0.17, 1, 0.28, 1);
+
+  /* Site reveals — everything except the one-time intro. */
+  --ease-reveal: cubic-bezier(0.19, 1, 0.22, 1);
+  --duration-reveal-in: 1100ms;
+  --duration-reveal-out: 760ms;
+  --duration-home-return: 1600ms;
+  --duration-page-out: 900ms;
+  --duration-page-white-hold: 220ms;
+
+  /* One-time intro. */
+  --ease-opening: cubic-bezier(0.17, 1, 0.28, 1);
+  --duration-opening-grid: 1300ms;
+  --duration-opening-chrome: 950ms;
+  --stagger-opening-grid-at: 90ms;
+  --stagger-opening-chrome-at: 180ms;
+  --stagger-opening-chrome-step: 35ms;
+  --duration-opening-tagline-in: 480ms;
+  --delay-opening-tagline-out: 2480ms;
+  --duration-opening-tagline-out: 640ms;
 }
 
 @layer base {
@@ -123,7 +123,7 @@
   }
 }
 
-@keyframes info-overlay-in {
+@keyframes overlay-in {
   from {
     opacity: 0;
   }
@@ -132,44 +132,13 @@
   }
 }
 
-@keyframes info-content-in {
-  from {
-    opacity: 0;
-    filter: blur(10px);
-    transform: translateY(8px);
-  }
+@keyframes overlay-out {
   to {
-    opacity: 1;
-    filter: blur(0);
-    transform: none;
+    opacity: 0;
   }
 }
 
-@keyframes rail-in {
-  from {
-    opacity: 0;
-    filter: blur(6px);
-  }
-  to {
-    opacity: 1;
-    filter: blur(0);
-  }
-}
-
-@keyframes enter-in {
-  from {
-    opacity: 0;
-    filter: blur(10px);
-    transform: translate3d(0, 26px, 0);
-  }
-  to {
-    opacity: 1;
-    filter: blur(0);
-    transform: none;
-  }
-}
-
-@keyframes home-return-in {
+@keyframes reveal-in {
   from {
     opacity: 0;
     filter: blur(8px);
@@ -180,29 +149,19 @@
   }
 }
 
-@keyframes site-splash-title-in {
-  from {
-    opacity: 0;
-    filter: blur(10px);
-  }
+@keyframes reveal-out {
   to {
-    opacity: 1;
-    filter: blur(0);
+    opacity: 0;
+    filter: blur(6px);
   }
 }
 
 @keyframes site-splash-tagline-in {
-  0% {
-    clip-path: inset(0 100% 0 0);
+  from {
     opacity: 0;
-    filter: blur(14px);
+    filter: blur(8px);
   }
-  35% {
-    opacity: 0.15;
-    filter: blur(10px);
-  }
-  100% {
-    clip-path: inset(0 0 0 0);
+  to {
     opacity: 1;
     filter: blur(0);
   }
@@ -218,25 +177,10 @@
   from {
     opacity: 0;
     filter: blur(10px);
-    transform: translate3d(0, 28px, 0);
   }
   to {
     opacity: 1;
     filter: blur(0);
-    transform: none;
-  }
-}
-
-@keyframes project-stagger-in {
-  from {
-    opacity: 0;
-    filter: blur(8px);
-    transform: translate3d(0, 18px, 0);
-  }
-  to {
-    opacity: 1;
-    filter: blur(0);
-    transform: none;
   }
 }
 
@@ -253,64 +197,76 @@
     animation: blur-in var(--duration-slow) var(--ease-out-soft) both;
   }
 
-  .animate-info-overlay-in {
-    animation: info-overlay-in var(--duration-page) var(--ease-page) both;
+  .animate-overlay-in {
+    animation: overlay-in var(--duration-reveal-in) var(--ease-reveal) both;
   }
 
-  .animate-info-content-in {
-    animation: info-content-in var(--duration-page) var(--ease-page) both;
-    animation-delay: 140ms;
+  .animate-overlay-out {
+    animation: overlay-out var(--duration-reveal-out) var(--ease-reveal) both;
   }
 
-  .animate-project-stagger {
-    will-change: transform, opacity;
-    animation: project-stagger-in var(--duration-project) var(--ease-project) both;
-    animation-delay: var(--enter-delay, 0ms);
+  .animate-reveal-in {
+    animation: reveal-in var(--duration-reveal-in) var(--ease-reveal) both;
   }
 
-  /* Opening sequence: splash → grid stagger → nav/footer. Once per tab. */
+  .animate-info-text-in {
+    animation: fade-in var(--duration-reveal-in) var(--ease-reveal) both;
+  }
+
+  .animate-reveal-out {
+    animation: reveal-out var(--duration-reveal-out) var(--ease-reveal) both;
+  }
+
+  /* Opening sequence: splash → brand → grid → nav/footer. Once per tab. */
   html[data-site-intro="splash"] main {
     opacity: 0;
     pointer-events: none;
   }
 
   html[data-site-intro="splash"] .site-chrome-nav,
-  html[data-site-intro="grid"] .site-chrome-nav,
   html[data-site-intro="splash"] .site-chrome-meta,
-  html[data-site-intro="grid"] .site-chrome-meta,
-  html[data-site-intro="grid"] .site-chrome-mobile,
   html[data-site-intro="splash"] .site-chrome-footer,
-  html[data-site-intro="grid"] .site-chrome-footer {
+  html[data-site-intro="splash"] .site-opening-menu-toggle {
     visibility: hidden;
   }
 
-  html[data-site-intro="splash"] .site-opening-brand .site-wordmark,
-  html[data-site-intro="splash"] .site-opening-brand > a,
-  html[data-site-intro="splash"] .site-opening-mobile-name {
-    animation: site-splash-title-in var(--duration-opening-title-in)
-      var(--ease-page) var(--delay-opening-title-in) both;
+  html[data-site-intro="splash"] .site-opening-brand {
+    visibility: hidden;
   }
 
+  /* Beat 1 — Cut House */
+  html[data-site-intro="chrome"] .site-opening-brand {
+    animation: reveal-in var(--duration-opening-chrome) var(--ease-reveal) both;
+  }
+
+  /* Beat 2 — grid */
   html.site-intro-grid .stagger-child,
   html[data-site-intro="grid"] .stagger-child,
   html[data-site-intro="chrome"] .stagger-child {
-    will-change: transform, opacity;
-    animation: site-grid-in var(--duration-opening-grid) var(--ease-grid) both;
-    animation-delay: calc(var(--i, 0) * var(--stagger-opening-grid-step));
+    will-change: opacity;
+    animation: site-grid-in var(--duration-opening-grid) var(--ease-opening) both;
+    animation-delay: var(--stagger-opening-grid-at);
   }
 
-  html[data-site-intro="chrome"] .stagger-rail:not(.site-opening-brand),
-  html[data-site-intro="chrome"] .site-chrome-footer {
-    animation: rail-in var(--duration-opening-chrome) var(--ease-page) both;
-    animation-delay: calc(var(--i, 0) * var(--stagger-opening-chrome-step));
+  /* Beat 3 — nav, footer, copyright */
+  html[data-site-intro="chrome"] .stagger-rail:not(.site-opening-brand):not(
+      .site-chrome-mobile
+    ),
+  html[data-site-intro="chrome"] .site-chrome-footer,
+  html[data-site-intro="chrome"] .site-opening-menu-toggle {
+    animation: reveal-in var(--duration-opening-chrome) var(--ease-reveal) both;
+    animation-delay: calc(
+      var(--stagger-opening-chrome-at) + var(--i, 0) * var(--stagger-opening-chrome-step)
+    );
   }
 
-  html[data-site-intro="chrome"] .site-opening-brand.stagger-rail {
-    animation: none;
+  html[data-home-enter] .stagger-rail,
+  html[data-home-enter] .site-chrome-footer {
+    animation: reveal-in var(--duration-home-return) var(--ease-reveal) both;
   }
 
   .animate-home-return {
-    animation: home-return-in var(--duration-home-return) var(--ease-page) both;
+    animation: reveal-in var(--duration-home-return) var(--ease-reveal) both;
   }
 
   /* Credit rows on a project: a slower cascade so each pair reads as its own beat. */
@@ -321,7 +277,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Site opening — wordmark in the rail, tagline centered on screen, then grid.
+   Site opening — centered tagline, then brand → grid → nav/footer.
    --------------------------------------------------------------------------- */
 .site-opening-backdrop {
   position: fixed;
@@ -341,8 +297,7 @@ html[data-site-intro="splash"] .site-opening-backdrop {
     left: var(--spacing-rail);
   }
 
-  /* Nav and copyright are hidden during splash — keep them out of flow so the
-     wordmark can sit at a true 50vh center, aligned with the tagline. */
+  /* Nav and copyright are hidden during splash so only the tagline reads. */
   html[data-site-intro="splash"] .site-chrome-nav,
   html[data-site-intro="splash"] .site-chrome-meta {
     position: absolute;
@@ -350,15 +305,6 @@ html[data-site-intro="splash"] .site-opening-backdrop {
     overflow: hidden;
     width: 0;
     height: 0;
-  }
-
-  html[data-site-intro="splash"] .site-opening-brand {
-    position: fixed;
-    top: var(--site-opening-y);
-    left: 0;
-    z-index: 50;
-    width: var(--spacing-rail);
-    translate: 0 -50%;
   }
 }
 
@@ -391,19 +337,18 @@ html[data-site-intro="splash"] .site-chrome {
   margin: 0;
   translate: -50% -50%;
   text-align: center;
-  font-size: var(--text-body);
-  line-height: var(--text-body--line-height);
+  font-size: var(--text-opening-tagline);
+  line-height: var(--text-opening-tagline--line-height);
   color: var(--color-ink-muted);
   pointer-events: none;
 }
 
 html[data-site-intro="splash"] .site-opening-tagline {
   display: block;
-  will-change: clip-path, opacity, filter;
   animation:
-    site-splash-tagline-in var(--duration-opening-tagline-in)
-      var(--ease-opening-tagline) var(--delay-opening-tagline-in) both,
-    site-splash-tagline-out var(--duration-opening-tagline-out) var(--ease-page)
+    site-splash-tagline-in var(--duration-opening-tagline-in) var(--ease-reveal)
+      both,
+    site-splash-tagline-out var(--duration-opening-tagline-out) var(--ease-reveal)
       var(--delay-opening-tagline-out) forwards;
 }
 
@@ -479,15 +424,45 @@ html[data-site-intro="splash"] .site-opening-menu-toggle {
 }
 
 /* ---------------------------------------------------------------------------
+   Page transitions — grid ↔ project detail.
+
+   A cover over the main column fades to page color, navigation happens while
+   fully white, then the cover releases. Avoids cross-dissolving two videos.
+   --------------------------------------------------------------------------- */
+.page-transition-cover {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  background: var(--color-page);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-page-out) var(--ease-reveal);
+}
+
+@media (min-width: 768px) {
+  .page-transition-cover {
+    left: var(--spacing-rail);
+  }
+}
+
+.page-transition-cover.is-visible {
+  opacity: 1;
+}
+
+.page-transition-cover.is-releasing {
+  opacity: 0;
+  transition-duration: var(--duration-reveal-in);
+}
+
+/* ---------------------------------------------------------------------------
    Cross-page transitions.
 
-   Driven by the native View Transitions API from ViewTransitionLink, so this is
-   progressive enhancement — browsers without it navigate normally.
+   View Transitions API for routes that are not grid ↔ project detail.
    --------------------------------------------------------------------------- */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: var(--duration-page);
-  animation-timing-function: var(--ease-page);
+  animation-duration: var(--duration-reveal-in);
+  animation-timing-function: var(--ease-reveal);
 }
 
 /* The rail is identical on every page; holding it still stops the wordmark and

@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
+import { MOTION_REVEAL_OUT_MS } from "@/lib/motion";
 
 type Props = {
   children: React.ReactNode;
@@ -34,12 +36,25 @@ type Props = {
  */
 export function InfoOverlay({ children, mode = "page", onDismiss }: Props) {
   const router = useRouter();
+  const [closing, setClosing] = useState(false);
 
-  const dismiss = useCallback(() => {
+  const finishDismiss = useCallback(() => {
     if (onDismiss) onDismiss();
     else if (mode === "modal") router.back();
     else router.push("/");
   }, [mode, onDismiss, router]);
+
+  const dismiss = useCallback(() => {
+    if (closing) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      finishDismiss();
+      return;
+    }
+
+    setClosing(true);
+    window.setTimeout(finishDismiss, MOTION_REVEAL_OUT_MS);
+  }, [closing, finishDismiss]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -51,12 +66,13 @@ export function InfoOverlay({ children, mode = "page", onDismiss }: Props) {
 
   const scrimClassName =
     "pointer-events-none fixed inset-0 bg-(--color-page)/80 backdrop-blur-xl md:bg-(--color-page)/88 md:backdrop-blur-[8px]";
-  const animatedScrimClassName =
-    mode === "modal"
-      ? scrimClassName
-      : `animate-info-overlay-in ${scrimClassName}`;
+  const animatedScrimClassName = closing
+    ? `animate-overlay-out ${scrimClassName}`
+    : `animate-overlay-in ${scrimClassName}`;
 
   const onClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (closing) return;
+
     const target = event.target;
     if (!(target instanceof Element)) return;
     if (target.closest("a")) return;
@@ -64,12 +80,13 @@ export function InfoOverlay({ children, mode = "page", onDismiss }: Props) {
     dismiss();
   };
 
-  const contentClassName =
-    "relative mx-auto max-w-[68ch] px-(--spacing-edge) py-16";
+  const contentClassName = closing
+    ? "animate-reveal-out relative mx-auto max-w-[68ch] px-(--spacing-edge) py-16"
+    : "relative mx-auto max-w-[68ch] px-(--spacing-edge) py-16";
 
   return (
     <div
-      className="fixed inset-0 z-40 overflow-y-auto overscroll-contain touch-pan-y"
+      className={`fixed inset-0 z-40 overflow-y-auto overscroll-contain touch-pan-y${closing ? " pointer-events-none" : ""}`}
       onClick={onClick}
     >
       {/* The scrim is what does the ghosting/blurring of the grid underneath.

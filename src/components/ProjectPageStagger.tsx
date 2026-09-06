@@ -1,37 +1,10 @@
-"use client";
-
-import { type ReactNode, useLayoutEffect, useRef } from "react";
-
-/** Milliseconds between each `[data-project-stagger]` block in document order. */
-const STAGGER_MS = 130;
-const INITIAL_DELAY = 140;
+import { type ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
 };
 
-/**
- * Stagger project-page blocks in document order — hero first, then title,
- * credits, body, and so on. Each `[data-project-stagger]` node gets the same
- * blur-and-rise entrance; only the delay steps down the page.
- */
+/** Semantic wrapper for project page content. Enter motion is handled by page transitions. */
 export function ProjectPageStagger({ children }: Props) {
-  const ref = useRef<HTMLElement>(null);
-
-  useLayoutEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const blocks = root.querySelectorAll<HTMLElement>("[data-project-stagger]");
-
-    blocks.forEach((block, index) => {
-      const delay = INITIAL_DELAY + index * STAGGER_MS;
-      block.style.setProperty("--enter-delay", `${delay}ms`);
-      block.classList.add("animate-project-stagger");
-    });
-  }, []);
-
-  return <article ref={ref}>{children}</article>;
+  return <article>{children}</article>;
 }

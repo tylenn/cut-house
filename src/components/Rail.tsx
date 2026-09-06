@@ -13,6 +13,25 @@ const NAV = [
   { href: "/info", label: "information" },
 ] as const;
 
+function NavLabel({ label, active }: { label: string; active: boolean }) {
+  const transition =
+    "col-start-1 row-start-1 transition-opacity duration-(--duration-base) ease-(--ease-out-soft)";
+
+  return (
+    <span className="grid">
+      <span className={`${transition} ${active ? "opacity-0" : "opacity-100"}`}>
+        {label}
+      </span>
+      <span
+        aria-hidden
+        className={`${transition} font-semibold ${active ? "opacity-100" : "opacity-0"}`}
+      >
+        {label}
+      </span>
+    </span>
+  );
+}
+
 /**
  * Desktop: nav pinned top-left, wordmark at 50vh in the rail, copyright at the
  * foot.
@@ -34,10 +53,19 @@ export function Rail({ name }: { name: string }) {
   // means a navigation closes it for free — no effect resetting state, and so
   // no extra render on every route change.
   const [openFor, setOpenFor] = useState<string | null>(null);
+  const [infoOrigin, setInfoOrigin] = useState<string | null>(null);
   const open = openFor === pathname;
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const infoOpen =
+    pathname === "/info" || pathname.startsWith("/info/");
+
+  const isActive = (href: string) => {
+    if (href === "/info") return false;
+    if (href === "/") {
+      return pathname === "/" || (infoOpen && infoOrigin === "/");
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
     <aside
@@ -86,35 +114,50 @@ export function Rail({ name }: { name: string }) {
       >
         <nav className="overflow-hidden">
           <div className="px-(--spacing-edge) pt-1 pb-4">
-            {NAV.map((item) => (
-              <TransitionLink
-                key={item.href}
-                href={item.href}
-                className={`block py-0.5 ${isActive(item.href) ? "font-semibold" : ""}`}
-              >
-                {item.label}
-              </TransitionLink>
-            ))}
+            {NAV.map((item, index) => {
+              const active = isActive(item.href);
+              return (
+                <TransitionLink
+                  key={item.href}
+                  href={item.href}
+                  onClick={
+                    item.href === "/info"
+                      ? () => setInfoOrigin(pathname)
+                      : undefined
+                  }
+                  className="stagger-rail block w-fit py-0.5"
+                  style={{ "--i": index } as React.CSSProperties}
+                >
+                  <NavLabel label={item.label} active={active} />
+                </TransitionLink>
+              );
+            })}
           </div>
         </nav>
       </div>
 
       {/* Desktop nav */}
       <nav className="site-chrome-nav hidden px-(--spacing-edge) md:block">
-        {NAV.map((item, index) => (
-          <TransitionLink
-            key={item.href}
-            href={item.href}
-            className={`stagger-rail -mx-1.5 block w-fit px-1.5 py-0.5 ${
-              isActive(item.href)
-                ? "font-semibold text-(--color-ink)"
-                : "text-(--color-ink-muted) transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
-            }`}
-            style={{ "--i": index } as React.CSSProperties}
-          >
-            {item.label}
-          </TransitionLink>
-        ))}
+        {NAV.map((item, index) => {
+          const active = isActive(item.href);
+          return (
+            <TransitionLink
+              key={item.href}
+              href={item.href}
+              onClick={
+                item.href === "/info"
+                  ? () => setInfoOrigin(pathname)
+                  : undefined
+              }
+              className={`stagger-rail -mx-1.5 block w-fit px-1.5 py-0.5 transition-colors duration-(--duration-fast) hover:text-(--color-ink) ${
+                active ? "text-(--color-ink)" : "text-(--color-ink-muted)"
+              }`}
+              style={{ "--i": index } as React.CSSProperties}
+            >
+              <NavLabel label={item.label} active={active} />
+            </TransitionLink>
+          );
+        })}
       </nav>
 
       <div

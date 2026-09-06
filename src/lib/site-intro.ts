@@ -3,32 +3,49 @@ export const SITE_INTRO_GRID_CLASS = "site-intro-grid";
 
 export type SiteIntroPhase = "splash" | "grid" | "chrome";
 
-/** Tagline fade-out — keep in sync with globals.css. */
-export const SITE_INTRO_TAGLINE_OUT_AT_MS = 6000;
-export const SITE_INTRO_TAGLINE_OUT_DURATION_MS = 700;
+/** Tagline fade-in — keep in sync with globals.css. */
+export const SITE_INTRO_TAGLINE_IN_DURATION_MS = 480;
 
-/** Opening grid motion — keep in sync with globals.css. */
-export const SITE_INTRO_OPENING_GRID_DURATION_MS = 900;
-export const SITE_INTRO_OPENING_GRID_STAGGER_MS = 65;
+/** How long the tagline sits fully visible. */
+export const SITE_INTRO_TAGLINE_HOLD_MS = 2000;
 
-/** When the grid stagger begins — as soon as the tagline fade finishes. */
-export const SITE_INTRO_GRID_AT_MS =
-  SITE_INTRO_TAGLINE_OUT_AT_MS + SITE_INTRO_TAGLINE_OUT_DURATION_MS;
+/** Tagline fade-out to white — keep in sync with globals.css. */
+export const SITE_INTRO_TAGLINE_OUT_DURATION_MS = 640;
 
-/** Nav and footer — shortly after the first grid tiles land. */
-export const SITE_INTRO_CHROME_AT_MS = SITE_INTRO_GRID_AT_MS + 900;
+export const SITE_INTRO_TAGLINE_OUT_AT_MS =
+  SITE_INTRO_TAGLINE_IN_DURATION_MS + SITE_INTRO_TAGLINE_HOLD_MS;
 
-/** Drop intro attributes once grid tiles and chrome have finished. */
-export function getSiteIntroDoneAtMs(gridItemCount = 0): number {
-  const gridAnimationEnd =
-    SITE_INTRO_GRID_AT_MS +
-    Math.max(0, gridItemCount - 1) * SITE_INTRO_OPENING_GRID_STAGGER_MS +
-    SITE_INTRO_OPENING_GRID_DURATION_MS;
+/** Full-white beat after the tagline is gone. */
+export const SITE_INTRO_WHITE_HOLD_MS = 480;
 
-  return Math.max(
-    SITE_INTRO_CHROME_AT_MS + 800,
-    gridAnimationEnd + 100,
-  );
+/** Opening page fade — keep in sync with globals.css. */
+export const SITE_INTRO_OPENING_GRID_DURATION_MS = 1300;
+export const SITE_INTRO_OPENING_CHROME_DURATION_MS = 950;
+export const SITE_INTRO_OPENING_STAGGER_GRID_MS = 90;
+export const SITE_INTRO_OPENING_STAGGER_CHROME_MS = 180;
+export const SITE_INTRO_OPENING_CHROME_STEP_MS = 35;
+
+/** Max `--i` on rail/footer chrome during the intro (nav + meta + footer). */
+export const SITE_INTRO_OPENING_CHROME_ITEM_COUNT = 5;
+
+/** Page reveal begins after the tagline sequence finishes. */
+export const SITE_INTRO_PAGE_AT_MS =
+  SITE_INTRO_TAGLINE_OUT_AT_MS +
+  SITE_INTRO_TAGLINE_OUT_DURATION_MS +
+  SITE_INTRO_WHITE_HOLD_MS;
+
+/** Drop intro attributes once the staggered page fade has finished. */
+export function getSiteIntroDoneAtMs(): number {
+  const gridEnd =
+    SITE_INTRO_OPENING_STAGGER_GRID_MS + SITE_INTRO_OPENING_GRID_DURATION_MS;
+
+  const chromeEnd =
+    SITE_INTRO_OPENING_STAGGER_CHROME_MS +
+    Math.max(0, SITE_INTRO_OPENING_CHROME_ITEM_COUNT - 1) *
+      SITE_INTRO_OPENING_CHROME_STEP_MS +
+    SITE_INTRO_OPENING_CHROME_DURATION_MS;
+
+  return SITE_INTRO_PAGE_AT_MS + Math.max(gridEnd, chromeEnd) + 100;
 }
 
 export function hasSiteIntroPlayed(): boolean {
@@ -65,4 +82,8 @@ export function setSiteIntroPhase(phase: SiteIntroPhase): void {
 export function clearSiteIntro(): void {
   delete document.documentElement.dataset.siteIntro;
   document.documentElement.classList.remove(SITE_INTRO_GRID_CLASS);
+}
+
+export function clearHomeEnter(): void {
+  delete document.documentElement.dataset.homeEnter;
 }
