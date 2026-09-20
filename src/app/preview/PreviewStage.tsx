@@ -47,11 +47,12 @@ export function PreviewStage() {
         </button>
       </div>
 
-      <div className="md:flex md:min-h-screen">
+      <div className="md:min-h-screen">
         <Rail name={NAME} />
 
-        <main className="relative min-w-0 flex-1 md:px-(--spacing-edge) md:py-5.5">
-          <div className="grid grid-cols-1 gap-x-(--spacing-gutter) md:grid-cols-2">
+        <main className="relative w-full md:py-5.5">
+          <div className="site-work-area relative w-full px-(--spacing-edge) md:pl-0 md:pr-(--spacing-edge)">
+            <div className="grid grid-cols-1 gap-x-(--spacing-gutter) md:grid-cols-2">
             {FIXTURES.map((item, i) => (
               <div
                 key={item.title}
@@ -105,6 +106,7 @@ export function PreviewStage() {
               </div>
             </InfoOverlay>
           ) : null}
+          </div>
         </main>
       </div>
     </>

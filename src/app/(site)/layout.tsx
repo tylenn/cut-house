@@ -30,16 +30,18 @@ export default async function SiteLayout({
       <PageTransitionObserver />
       <SiteOpening tagline={tagline} />
       {seoSettings ? <JsonLd data={siteJsonLd(seoSettings)} /> : null}
-      <div className="md:flex md:min-h-screen">
+      <div className="md:min-h-screen">
         <Rail name={name} />
         {/* The modal slot lives inside main, and main is the positioned
             ancestor, so an intercepted overlay lands in exactly the same box as
             the standalone page's — one set of positioning rules, not two. */}
         {/* py-5.5 = rail py-5 plus the nav label's py-0.5, so the grid lines up
             with the word "projects", not the padded hit area around it. */}
-        <main className="relative min-w-0 flex-1 md:px-(--spacing-edge) md:py-5.5">
-          {children}
-          {modal}
+        <main className="relative w-full md:py-5.5">
+          <div className="site-work-area relative w-full px-(--spacing-edge) md:pl-0 md:pr-(--spacing-edge)">
+            {children}
+            {modal}
+          </div>
         </main>
       </div>
 

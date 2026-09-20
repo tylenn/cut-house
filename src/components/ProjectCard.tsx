@@ -1,7 +1,7 @@
 import { ProjectCardLink } from "@/components/ProjectCardLink";
 import { ProjectMedia } from "@/components/ProjectMedia";
 import { SanityImage } from "@/components/SanityImage";
-import { muxAspectRatio, muxLoopUrl, muxPosterUrl } from "@/sanity/lib/mux";
+import { muxLoopUrl, muxPosterUrl } from "@/sanity/lib/mux";
 import type { StegaAware } from "@/sanity/lib/stega";
 import type { PROJECTS_QUERY_RESULT } from "@/sanity/types";
 
@@ -20,7 +20,6 @@ export function ProjectCard({
   if (!slug) return null;
 
   const playbackId = video?.playbackId ?? undefined;
-  const aspectRatio = muxAspectRatio(video?.aspectRatio) ?? 16 / 9;
   const label = title ?? "Untitled";
   const sizes = "(max-width: 768px) 100vw, 45vw";
 
@@ -35,10 +34,7 @@ export function ProjectCard({
   const media = poster?.asset ? (
     // An uploaded still overrides everything, including the loop: choosing a
     // frame by hand is a decision to show that frame.
-    <div
-      className="relative overflow-hidden bg-(--color-rule)"
-      style={{ aspectRatio }}
-    >
+    <div className="relative aspect-video overflow-hidden bg-(--color-rule)">
       <SanityImage
         image={poster}
         alt={label}
@@ -53,15 +49,11 @@ export function ProjectCard({
       loopUrl={animatedUrl}
       alt={label}
       sizes={sizes}
-      aspectRatio={aspectRatio}
+      aspectRatio={16 / 9}
       priority={priority}
     />
   ) : (
-    <div
-      className="bg-(--color-rule)"
-      style={{ aspectRatio }}
-      aria-hidden
-    />
+    <div className="aspect-video bg-(--color-rule)" aria-hidden />
   );
 
   const meta = (

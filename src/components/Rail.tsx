@@ -71,7 +71,7 @@ export function Rail({ name }: { name: string }) {
     <aside
       // Held still across navigations by ::view-transition-group(rail).
       style={{ viewTransitionName: "rail" }}
-      className="site-chrome md:sticky md:top-0 md:relative md:h-screen md:w-(--spacing-rail) md:shrink-0 md:py-5"
+      className="site-chrome md:fixed md:inset-y-0 md:left-0 md:z-40 md:h-screen md:w-(--spacing-rail) md:py-5"
     >
       {/* Mobile bar — the whole strip toggles the menu. Home is "projects"
           in the open nav, so the name is not a second, nested control. */}

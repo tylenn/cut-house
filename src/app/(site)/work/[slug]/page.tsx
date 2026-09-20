@@ -4,8 +4,6 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/JsonLd";
 import { PortableText } from "@/components/PortableText";
 import { ProjectPageStagger } from "@/components/ProjectPageStagger";
-import { TransitionLink } from "@/components/TransitionLink";
-import { workHref } from "@/lib/routes";
 import { pageMetadata, projectJsonLd, projectShareImageUrl } from "@/lib/seo";
 import { PRINCIPAL } from "@/lib/site";
 import { SanityImage } from "@/components/SanityImage";
@@ -13,11 +11,7 @@ import { VideoPlayer } from "@/components/VideoPlayer";
 import { client } from "@/sanity/lib/client";
 import { sanityFetch } from "@/sanity/lib/live";
 import { muxAspectRatio, muxPosterUrl } from "@/sanity/lib/mux";
-import {
-  PROJECT_ORDER_QUERY,
-  PROJECT_QUERY,
-  PROJECT_SLUGS_QUERY,
-} from "@/sanity/lib/queries";
+import { PROJECT_QUERY, PROJECT_SLUGS_QUERY } from "@/sanity/lib/queries";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -56,24 +50,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
 
-  const [{ data: project }, { data: order }] = await Promise.all([
-    sanityFetch({ query: PROJECT_QUERY, params: { slug } }),
-    sanityFetch({ query: PROJECT_ORDER_QUERY }),
-  ]);
+  const { data: project } = await sanityFetch({
+    query: PROJECT_QUERY,
+    params: { slug },
+  });
 
   if (!project) notFound();
 
   const shareImage = projectShareImageUrl(project);
-
-  // Neighbours by array index, not by a GROQ orderRank comparison: every project
-  // without a manual position shares the same coalesced rank, so a < / > query
-  // matches nothing and the nav silently disappears.
-  const index = (order ?? []).findIndex((entry) => entry.slug === slug);
-  const previous = index > 0 ? order?.[index - 1] : undefined;
-  const next =
-    index >= 0 && index < (order?.length ?? 0) - 1
-      ? order?.[index + 1]
-      : undefined;
 
   const playbackId = project.video?.playbackId ?? undefined;
   const aspectRatio = muxAspectRatio(project.video?.aspectRatio);
@@ -209,37 +193,6 @@ export default async function ProjectPage({ params }: Props) {
             </figure>
           ))}
         </div>
-      ) : null}
-
-      {previous || next ? (
-        <nav className="mt-16 flex justify-between gap-8 px-(--spacing-edge) md:px-0">
-          {previous?.slug ? (
-            <TransitionLink
-              href={workHref(previous.slug)}
-              className="group text-(--color-ink-muted) transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
-            >
-              <span className="inline-block transition-transform duration-(--duration-base) ease-(--ease-out-soft) group-hover:-translate-x-1">
-                ←
-              </span>{" "}
-              {previous.title}
-            </TransitionLink>
-          ) : (
-            <span />
-          )}
-          {next?.slug ? (
-            <TransitionLink
-              href={workHref(next.slug)}
-              className="group text-right text-(--color-ink-muted) transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
-            >
-              {next.title}{" "}
-              <span className="inline-block transition-transform duration-(--duration-base) ease-(--ease-out-soft) group-hover:translate-x-1">
-                →
-              </span>
-            </TransitionLink>
-          ) : (
-            <span />
-          )}
-        </nav>
       ) : null}
     </ProjectPageStagger>
     </>

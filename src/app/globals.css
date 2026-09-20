@@ -26,14 +26,18 @@
   --text-title--line-height: 1.25;
   --text-display: 2.75rem;
   --text-display--line-height: 1;
-  --text-wordmark: 2.65rem;
+  --text-wordmark: 2.1rem;
   --text-wordmark--line-height: 1;
 
-  --spacing-rail: 33.333%;
+  --spacing-rail: 13rem;
   --spacing-gutter: 2px;
   /* The work grid breathes more than the hairline gutter used elsewhere. */
-  --spacing-grid: 0.75rem;
+  --spacing-grid: 0.625rem;
   --spacing-edge: 1.75rem;
+  /* Extra room between the wordmark and the work column so the grid
+     shrinks instead of sitting flush against the rail. */
+  --spacing-work-gap: 8rem;
+  --width-work-max: 64rem;
   --site-opening-y: 50dvh;
 
   /* UI micro-interactions (hover, toggles, scrubber). */
@@ -75,6 +79,22 @@
     font-family: var(--font-sans);
     font-size: var(--text-body);
     line-height: var(--text-body--line-height);
+  }
+
+  @media (min-width: 768px) {
+    main {
+      padding-left: var(--spacing-rail);
+    }
+
+    .site-work-area {
+      box-sizing: border-box;
+      max-width: min(
+        var(--width-work-max),
+        calc(100% - var(--spacing-work-gap))
+      );
+      margin-left: auto;
+      margin-right: 0;
+    }
   }
 
   a {
@@ -293,10 +313,6 @@ html[data-site-intro="splash"] .site-opening-backdrop {
 }
 
 @media (min-width: 768px) {
-  html[data-site-intro="splash"] .site-opening-backdrop {
-    left: var(--spacing-rail);
-  }
-
   /* Nav and copyright are hidden during splash so only the tagline reads. */
   html[data-site-intro="splash"] .site-chrome-nav,
   html[data-site-intro="splash"] .site-chrome-meta {
@@ -437,12 +453,6 @@ html[data-site-intro="splash"] .site-opening-menu-toggle {
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--duration-page-out) var(--ease-reveal);
-}
-
-@media (min-width: 768px) {
-  .page-transition-cover {
-    left: var(--spacing-rail);
-  }
 }
 
 .page-transition-cover.is-visible {
