@@ -30,7 +30,7 @@ export default async function SiteLayout({
       <PageTransitionObserver />
       <SiteOpening tagline={tagline} />
       {seoSettings ? <JsonLd data={siteJsonLd(seoSettings)} /> : null}
-      <div className="md:min-h-screen">
+      <div className="flex min-h-dvh flex-col md:block md:min-h-screen">
         <Rail name={name} />
         {/* The modal slot lives inside main, and main is the positioned
             ancestor, so an intercepted overlay lands in exactly the same box as
@@ -43,9 +43,8 @@ export default async function SiteLayout({
             {modal}
           </div>
         </main>
+        <SiteFooter links={settings?.socialLinks ?? []} />
       </div>
-
-      <SiteFooter links={settings?.socialLinks ?? []} />
     </>
   );
 }

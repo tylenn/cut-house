@@ -87,7 +87,7 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         ) : null}
 
-      <header className="px-(--spacing-edge) pt-2 md:px-0">
+      <header className="pt-2">
         <h1 className="text-(length:--text-title) leading-(--text-title--line-height) font-semibold">
           {project.title}
           {project.client ? ` — ${project.client}` : null}
@@ -147,7 +147,7 @@ export default async function ProjectPage({ params }: Props) {
       </header>
 
       {project.body?.length ? (
-        <div className="mt-8 max-w-[62ch] px-(--spacing-edge) md:px-0">
+        <div className="mt-8 max-w-[62ch]">
           <PortableText value={project.body} />
         </div>
       ) : null}

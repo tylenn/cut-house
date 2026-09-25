@@ -28,7 +28,7 @@ export function ProjectGrid({ projects }: { projects: ProjectCardData[] }) {
             style={{ "--i": index } as React.CSSProperties}
           >
             <div className="aspect-video w-full bg-(--color-rule)" />
-            <div className="px-(--spacing-edge) pt-1 md:px-0">
+            <div className="pt-1">
               <div className="h-2.5 w-32 bg-(--color-rule)" />
               <div className="mt-1.5 h-2.5 w-44 bg-(--color-rule)/60" />
             </div>

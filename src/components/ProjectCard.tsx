@@ -57,7 +57,7 @@ export function ProjectCard({
   );
 
   const meta = (
-    <div className="px-(--spacing-edge) pt-1 leading-tight md:px-0">
+    <div className="pt-1 leading-tight">
       <div className="font-semibold">{label}</div>
       {roles?.length ? (
         <div className="text-(--color-ink-muted) transition-colors duration-(--duration-fast) group-hover:text-(--color-ink)">

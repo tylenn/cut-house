@@ -168,7 +168,7 @@ export function Rail({ name }: { name: string }) {
       </div>
 
       <p
-        className="site-chrome-meta stagger-rail absolute right-0 bottom-0 left-0 hidden px-(--spacing-edge) text-(length:--text-meta) text-(--color-ink-faint) md:block"
+        className="site-chrome-meta stagger-rail absolute right-0 bottom-0 left-0 hidden px-(--spacing-edge) text-(length:--text-meta) whitespace-nowrap text-(--color-ink-faint) md:block"
         style={{ "--i": NAV.length + 1 } as React.CSSProperties}
       >
         © {new Date().getFullYear()} {COPYRIGHT_HOLDER}. All rights reserved.

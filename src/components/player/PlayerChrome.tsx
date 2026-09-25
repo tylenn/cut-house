@@ -2,16 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import {
-  CollapseIcon,
-  ExpandIcon,
-  PauseIcon,
-  PlayIcon,
-  ReplayIcon,
-  SoundOffIcon,
-  SoundOnIcon,
-} from "./icons";
-
 /**
  * The slice of HTMLMediaElement the chrome actually touches.
  *
@@ -53,25 +43,17 @@ type Props = {
   title?: string;
 };
 
-/** mm:ss. Hours are not a portfolio problem. */
-function formatTime(seconds: number): string {
-  if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}:${s.toString().padStart(2, "0")}`;
-}
-
 const IDLE_AFTER = 2400;
 
 export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
   const [playing, setPlaying] = useState(false);
-  const [ended, setEnded] = useState(false);
   const [muted, setMuted] = useState(false);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
   const [idle, setIdle] = useState(false);
   const [scrubbing, setScrubbing] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Read inside the timeupdate listener, which must not resubscribe mid-drag.
@@ -104,7 +86,6 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
 
     const onPlay = () => {
       setPlaying(true);
-      setEnded(false);
       wake();
     };
     const onPause = () => {
@@ -114,7 +95,6 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
     };
     const onEnded = () => {
       setPlaying(false);
-      setEnded(true);
       setIdle(false);
       clearIdle();
     };
@@ -132,7 +112,6 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
     const attach = (el: MediaLike) => {
       media = el;
       setPlaying(!el.paused);
-      setEnded(el.ended);
       setMuted(el.muted);
       if (Number.isFinite(el.duration) && el.duration > 0) {
         setDuration(el.duration);
@@ -189,7 +168,6 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
         .play()
         .then(() => {
           setPlaying(true);
-          setEnded(false);
         })
         .catch(() => {});
     } else {
@@ -229,7 +207,11 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
     <div
       className="absolute inset-0 z-10"
       onPointerMove={wake}
-      onPointerLeave={() => playing && setIdle(true)}
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => {
+        setHovered(false);
+        if (playing) setIdle(true);
+      }}
       style={{ cursor: barHidden ? "none" : "auto" }}
     >
       {/* Click anywhere on the frame to toggle, the way every player behaves.
@@ -238,41 +220,45 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
           reader. */}
       <div className="absolute inset-0" onClick={toggle} aria-hidden />
 
-      {/* Centre button. Present only when there is something to resume from. */}
-      {!playing ? (
-        <div className="pointer-events-none absolute inset-0 grid place-items-center">
-          <button
-            type="button"
-            onClick={toggle}
-            aria-label={ended ? "Replay" : title ? `Play ${title}` : "Play"}
-            className="pointer-events-auto grid h-16 w-16 place-items-center rounded-full bg-(--color-page)/90 text-(--color-ink) shadow-[0_2px_20px_rgba(0,0,0,0.18)] backdrop-blur-sm transition-transform duration-(--duration-fast) ease-(--ease-out-soft) hover:scale-[1.06] focus-visible:scale-[1.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ink)"
-          >
-            {ended ? (
-              <ReplayIcon className="h-7 w-7" />
-            ) : (
-              <PlayIcon className="h-8 w-8" />
-            )}
-          </button>
-        </div>
-      ) : null}
+      {/* Centre word. Play while stopped. Pause fades in only after the pointer
+          has rested on a playing clip, so a shaky mouse does not flash it. */}
+      <div className="pointer-events-none absolute inset-0 grid place-items-center">
+        <button
+          type="button"
+          onClick={toggle}
+          aria-label={playing ? "Pause" : title ? `Play ${title}` : "Play"}
+          className={`text-(length:--text-title) text-(--color-page) transition-opacity duration-(--duration-base) ease-(--ease-out-soft) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-page) ${
+            !playing || (hovered && !barHidden)
+              ? "pointer-events-auto opacity-100 delay-200"
+              : "pointer-events-none opacity-0 delay-0"
+          }`}
+        >
+          {playing ? "pause" : "play"}
+        </button>
+      </div>
 
       {/* Control bar. */}
       <div
-        className="absolute right-0 bottom-0 left-0 flex items-center gap-3 bg-gradient-to-t from-black/45 to-transparent px-3 pt-8 pb-3 transition-opacity duration-(--duration-base) ease-(--ease-out-soft)"
+        className="absolute right-0 bottom-0 left-0 flex items-center bg-gradient-to-t from-black/45 to-transparent px-3 pt-8 pb-3 transition-opacity duration-(--duration-base) ease-(--ease-out-soft)"
         style={{ opacity: barHidden ? 0 : 1 }}
       >
         <button
           type="button"
-          onClick={toggle}
-          aria-label={playing ? "Pause" : "Play"}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-(--color-page)/90 text-(--color-ink) transition-transform duration-(--duration-fast) ease-(--ease-out-soft) hover:scale-[1.08] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-page)"
+          onClick={toggleMute}
+          aria-label={muted ? "Unmute" : "Mute"}
+          className="shrink-0 text-(length:--text-body) text-(--color-page) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-page)"
         >
-          {playing ? <PauseIcon className="h-5 w-5" /> : <PlayIcon className="h-5 w-5" />}
+          {muted ? "unmute" : "mute"}
         </button>
 
-        <span className="shrink-0 text-(length:--text-meta) tabular-nums text-(--color-page)">
-          {formatTime(time)}
-        </span>
+        <button
+          type="button"
+          onClick={toggleFullscreen}
+          aria-label={fullscreen ? "Exit full screen" : "Full screen"}
+          className="ml-4 shrink-0 text-(length:--text-body) text-(--color-page) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-page)"
+        >
+          {fullscreen ? "close" : "full screen"}
+        </button>
 
         <input
           type="range"
@@ -291,31 +277,9 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
           }}
           onKeyDown={wake}
           aria-label="Seek"
-          className="player-scrub min-w-0 flex-1"
+          className="player-scrub ml-4 min-w-0 flex-1"
           style={{ ["--progress" as string]: `${progress}%` }}
         />
-
-        <span className="shrink-0 text-(length:--text-meta) tabular-nums text-(--color-page)">
-          {formatTime(duration)}
-        </span>
-
-        <button
-          type="button"
-          onClick={toggleMute}
-          aria-label={muted ? "Unmute" : "Mute"}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-(--color-page) transition-transform duration-(--duration-fast) ease-(--ease-out-soft) hover:scale-[1.12] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-page)"
-        >
-          {muted ? <SoundOffIcon className="h-5 w-5" /> : <SoundOnIcon className="h-5 w-5" />}
-        </button>
-
-        <button
-          type="button"
-          onClick={toggleFullscreen}
-          aria-label={fullscreen ? "Exit full screen" : "Full screen"}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-(--color-page) transition-transform duration-(--duration-fast) ease-(--ease-out-soft) hover:scale-[1.12] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-page)"
-        >
-          {fullscreen ? <CollapseIcon className="h-5 w-5" /> : <ExpandIcon className="h-5 w-5" />}
-        </button>
       </div>
     </div>
   );
