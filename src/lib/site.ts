@@ -9,7 +9,7 @@
 export const COPYRIGHT_HOLDER = "Cut House";
 
 /** Wordmark / browser-tab name. Lowercase on purpose. */
-export const SITE_NAME = "cut house";
+export const SITE_NAME = "Cut House";
 
 /** Fallback line under the name on the opening splash and in Sanity. */
 export const DEFAULT_TAGLINE =
