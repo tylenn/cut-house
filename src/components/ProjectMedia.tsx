@@ -49,10 +49,13 @@ export function ProjectMedia({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
+        const video = videoRef.current;
         if (entry.isIntersecting) {
           setMounted(true);
+          // Mounting starts playback once; coming back on screen has to ask again.
+          if (video) void video.play().catch(() => {});
         } else {
-          videoRef.current?.pause();
+          video?.pause();
         }
       },
       // A little margin so a tile is already running by the time it is read.

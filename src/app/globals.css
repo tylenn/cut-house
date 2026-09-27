@@ -31,8 +31,8 @@
 
   --spacing-rail: 13rem;
   --spacing-gutter: 2px;
-  /* The work grid breathes more than the hairline gutter used elsewhere. */
-  --spacing-grid: 0.625rem;
+  /* Space between grid tiles. Tighter than body copy, still a step off the hairline gutter. */
+  --spacing-grid: 0.25rem;
   /* Desktop edge. Mobile tightens this in the base layer. */
   --spacing-edge: 1.75rem;
   /* Extra room between the wordmark and the work column so the grid
