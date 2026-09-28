@@ -78,7 +78,7 @@ export function PreviewStage() {
               <div className="animate-info-text-in">
                 <section className="mb-8">
                   <h2 className="font-semibold">Contact</h2>
-                  <span className="block text-(--color-ink-muted)">info@tylen.ca</span>
+                  <span className="block text-(--color-ink-muted)">info@cuthouse.co</span>
                   <p>Available globally.</p>
                 </section>
                 <section className="mb-8">
