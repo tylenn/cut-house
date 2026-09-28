@@ -39,7 +39,7 @@ footage (Turo brand purple), not a placeholder.
 ### Information
 Single column starting at ~33% from left, ~45% wide. Sections, each with a bold black
 heading and grey/black body:
-  - **Contact** — `info@tylen.ca` (grey, link) / `Available globally.`
+  - **Contact** — `info@cuthouse.co` (grey, link) / `Available globally.`
   - **Application** — `Full client list and commercial portfolio available upon request.`
   - **Description** — 3-line bio + underlined grey `read more` toggle that expands a second
     paragraph and swaps the toggle to `close`. Copy:
