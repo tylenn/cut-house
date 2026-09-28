@@ -38,7 +38,7 @@
   /* Extra room between the wordmark and the work column so the grid
      shrinks instead of sitting flush against the rail. */
   --spacing-work-gap: 8rem;
-  --width-work-max: 77rem;
+  --width-work-max: 86rem;
   --site-opening-y: 50dvh;
 
   /* UI micro-interactions (hover, toggles, scrubber). */
@@ -362,6 +362,7 @@ html[data-site-intro="splash"] .site-chrome {
   translate: -50% -50%;
   text-align: center;
   font-size: var(--text-opening-tagline);
+  font-weight: 700;
   line-height: var(--text-opening-tagline--line-height);
   color: var(--color-ink-muted);
   pointer-events: none;
