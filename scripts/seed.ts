@@ -64,12 +64,12 @@ async function seedSingletons() {
     tagline: "A global production company driven by culture",
     description:
       "Cut House is a global production services company. Cinematography and editing by Tylen — purpose-driven visuals for film, advertising, and commercial work.",
-    email: "info@tylen.ca",
+    email: "info@cuthouse.co",
   });
   await client
     .patch("siteSettings")
-    .set({ email: "info@tylen.ca" })
     .setIfMissing({
+      email: "info@cuthouse.co",
       description:
         "Cut House is a global production services company. Cinematography and editing by Tylen — purpose-driven visuals for film, advertising, and commercial work.",
     })
