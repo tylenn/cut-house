@@ -366,7 +366,7 @@ html[data-site-intro="splash"] .site-chrome {
   font-size: var(--text-opening-tagline);
   font-weight: 700;
   line-height: var(--text-opening-tagline--line-height);
-  color: var(--color-ink-muted);
+  color: var(--color-ink);
   pointer-events: none;
 }
 
