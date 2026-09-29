@@ -446,6 +446,23 @@ html[data-site-intro="splash"] .site-opening-menu-toggle {
   background: var(--color-page);
 }
 
+/* Fullscreen stand-in for iPhone, which has no Fullscreen API for elements:
+   the player covers the viewport, letterboxed, keeping its own controls. The
+   !important lines beat the inline aspect ratio and Mux's inline object-fit. */
+[data-player-expanded] {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  width: 100%;
+  height: 100dvh;
+  aspect-ratio: auto !important;
+  background: #000;
+}
+
+[data-player-expanded] mux-player {
+  --media-object-fit: contain !important;
+}
+
 .player-scrub:focus-visible {
   outline: 2px solid var(--color-page);
   outline-offset: 4px;
