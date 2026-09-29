@@ -60,7 +60,8 @@ export function ProjectCard({
     <div className="pt-1 leading-tight">
       <div className="font-semibold">{label}</div>
       {roles?.length ? (
-        <div className="text-(--color-ink-muted) transition-colors duration-(--duration-fast) group-hover:text-(--color-ink)">
+        // 2px smaller on phones; desktop keeps the body size.
+        <div className="text-[length:calc(var(--text-body)-2px)] text-(--color-ink-muted) transition-colors duration-(--duration-fast) group-hover:text-(--color-ink) md:text-(length:--text-body)">
           {roles.join(", ")}
         </div>
       ) : null}
