@@ -254,10 +254,10 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
         <button
           type="button"
           onClick={toggleFullscreen}
-          aria-label={fullscreen ? "Exit full screen" : "Full screen"}
+          aria-label={fullscreen ? "Exit fullscreen" : "Fullscreen"}
           className="ml-4 shrink-0 text-(length:--text-body) text-(--color-page) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-page)"
         >
-          {fullscreen ? "close" : "full screen"}
+          {fullscreen ? "close" : "fullscreen"}
         </button>
 
         <input
