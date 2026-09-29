@@ -12,19 +12,11 @@ export const COPYRIGHT_HOLDER = "Cut House";
 export const SITE_NAME = "Cut House";
 
 /** Fallback line under the name on the opening splash and in Sanity. */
-export const DEFAULT_TAGLINE =
-  "A global production company driven by culture";
+export const DEFAULT_TAGLINE = "A global production services company";
 
-const LEGACY_TAGLINES = new Set([
-  "a global production services company",
-  "A global production services company",
-]);
-
-/** CMS tagline, with legacy seed copy mapped to the current default. */
+/** CMS tagline, falling back to the default when the field is empty. */
 export function resolveSiteTagline(cmsTagline?: string | null): string {
-  const trimmed = cmsTagline?.trim();
-  if (!trimmed || LEGACY_TAGLINES.has(trimmed)) return DEFAULT_TAGLINE;
-  return trimmed;
+  return cmsTagline?.trim() || DEFAULT_TAGLINE;
 }
 
 /**
