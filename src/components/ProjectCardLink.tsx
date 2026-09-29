@@ -22,8 +22,10 @@ export function ProjectCardLink({
       className="stagger-child group block"
       style={{ "--i": index } as React.CSSProperties}
     >
-      {media}
-      {meta}
+      <div className="work-tile">
+        {media}
+        {meta}
+      </div>
     </TransitionLink>
   );
 }

@@ -47,6 +47,8 @@
   --duration-fast: 180ms;
   --duration-base: 320ms;
   --duration-slow: 620ms;
+  /* How far the other grid tiles fade while one is hovered. */
+  --opacity-grid-dim: 0.55;
 
   /* Site reveals — everything except the one-time intro. */
   --ease-reveal: cubic-bezier(0.19, 1, 0.22, 1);
@@ -440,6 +442,23 @@ html[data-site-intro="splash"] .site-opening-menu-toggle {
 .player-scrub:focus-visible {
   outline: 2px solid var(--color-page);
   outline-offset: 4px;
+}
+
+/* ---------------------------------------------------------------------------
+   Work grid hover — the other tiles fade back so the hovered one leads.
+
+   The fade sits on an inner wrapper because the tile link itself carries the
+   intro animation, whose fill would override an opacity set on it. Touch
+   screens have no hover, so they never see it.
+   --------------------------------------------------------------------------- */
+.work-tile {
+  transition: opacity var(--duration-base) var(--ease-out-soft);
+}
+
+@media (hover: hover) {
+  .work-grid:has(a:hover) a:not(:hover) .work-tile {
+    opacity: var(--opacity-grid-dim);
+  }
 }
 
 /* ---------------------------------------------------------------------------
