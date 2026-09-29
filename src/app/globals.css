@@ -446,6 +446,19 @@ html[data-site-intro="splash"] .site-opening-menu-toggle {
   background: var(--color-page);
 }
 
+/* Phones and tablets in fullscreen: show the whole film on black rather than
+   cropping it to the screen. Desktop keeps its edge-to-edge fill. The
+   !important beats Mux's inline object-fit. */
+@media (pointer: coarse) {
+  :fullscreen:has(mux-player) {
+    background: #000;
+  }
+
+  :fullscreen mux-player {
+    --media-object-fit: contain !important;
+  }
+}
+
 .player-scrub:focus-visible {
   outline: 2px solid var(--color-page);
   outline-offset: 4px;
