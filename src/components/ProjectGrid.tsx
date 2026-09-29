@@ -19,7 +19,7 @@ export function ProjectGrid({ projects }: { projects: ProjectCardData[] }) {
     return (
       <div
         aria-hidden
-        className="grid grid-cols-1 gap-(--spacing-grid) md:grid-cols-2 md:[&>*]:transition-opacity md:[&>*]:duration-(--duration-base) md:[&>*]:ease-(--ease-out-soft) md:[&:hover>:not(:hover)]:opacity-75"
+        className="grid grid-cols-1 gap-(--spacing-grid) md:grid-cols-2"
       >
         {Array.from({ length: PLACEHOLDER_COUNT }, (_, index) => (
           <div
@@ -39,7 +39,7 @@ export function ProjectGrid({ projects }: { projects: ProjectCardData[] }) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-(--spacing-grid) md:grid-cols-2 md:[&>*]:transition-opacity md:[&>*]:duration-(--duration-base) md:[&>*]:ease-(--ease-out-soft) md:[&:hover>:not(:hover)]:opacity-75">
+    <div className="work-grid grid grid-cols-1 gap-(--spacing-grid) md:grid-cols-2">
       {projects.map((project, index) => (
         <ProjectCard
           key={project._id}
