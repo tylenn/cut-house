@@ -50,6 +50,11 @@ function resolveVideo(el: MediaHost | null): WebkitVideo | null {
   return native instanceof HTMLVideoElement ? native : null;
 }
 
+/** Orientation lock, typed loosely: not every browser's lib.dom has it. */
+type LockableOrientation = ScreenOrientation & {
+  lock?: (orientation: "landscape") => Promise<void>;
+};
+
 type Props = {
   mediaRef: React.RefObject<MediaLike | null>;
   containerRef: React.RefObject<HTMLElement | null>;
@@ -167,10 +172,29 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
 
   // ---- fullscreen -------------------------------------------------------
   useEffect(() => {
-    const onChange = () => setFullscreen(Boolean(document.fullscreenElement));
+    const onChange = () => {
+      const active = Boolean(document.fullscreenElement);
+      setFullscreen(active);
+      // Android phones stay upright in fullscreen; turn a wide film sideways,
+      // as native players do. Only touch devices, and only while fullscreen —
+      // desktops reject the lock anyway.
+      if (!window.matchMedia("(pointer: coarse)").matches) return;
+      const orientation = screen.orientation as LockableOrientation | undefined;
+      if (!active) {
+        try {
+          orientation?.unlock?.();
+        } catch {
+          // Browsers without orientation lock throw here; nothing to undo.
+        }
+        return;
+      }
+      const video = resolveVideo(mediaRef.current as MediaHost | null);
+      const wide = !video?.videoHeight || video.videoWidth >= video.videoHeight;
+      if (wide) void orientation?.lock?.("landscape").catch(() => {});
+    };
     document.addEventListener("fullscreenchange", onChange);
     return () => document.removeEventListener("fullscreenchange", onChange);
-  }, []);
+  }, [mediaRef]);
 
   // ---- actions ----------------------------------------------------------
   const toggle = useCallback(() => {
