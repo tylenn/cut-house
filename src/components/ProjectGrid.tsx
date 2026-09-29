@@ -39,7 +39,9 @@ export function ProjectGrid({ projects }: { projects: ProjectCardData[] }) {
   }
 
   return (
-    <div className="work-grid grid grid-cols-1 gap-(--spacing-grid) md:grid-cols-2">
+    // One column on phones, so the gap is the room between a tile's text and
+    // the next film: 1px more there than desktop's grid gap.
+    <div className="work-grid grid grid-cols-1 gap-[calc(var(--spacing-grid)+1px)] md:grid-cols-2 md:gap-(--spacing-grid)">
       {projects.map((project, index) => (
         <ProjectCard
           key={project._id}
