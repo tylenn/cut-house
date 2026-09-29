@@ -36,6 +36,20 @@ function resolveMedia(el: MediaHost | null): MediaLike | null {
   return el;
 }
 
+/** The prefixed API iPhone Safari uses in place of the Fullscreen API. */
+type WebkitVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
+
+/**
+ * The real <video> behind the media — itself for a plain video, the element
+ * mux-video wraps (`nativeEl`) for Mux.
+ */
+function resolveVideo(el: MediaHost | null): WebkitVideo | null {
+  const media = resolveMedia(el);
+  if (media instanceof HTMLVideoElement) return media;
+  const native = (media as { nativeEl?: unknown } | null)?.nativeEl;
+  return native instanceof HTMLVideoElement ? native : null;
+}
+
 type Props = {
   mediaRef: React.RefObject<MediaLike | null>;
   containerRef: React.RefObject<HTMLElement | null>;
@@ -186,9 +200,22 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
   const toggleFullscreen = useCallback(() => {
     const node = containerRef.current;
     if (!node) return;
-    if (document.fullscreenElement) void document.exitFullscreen().catch(() => {});
-    else void node.requestFullscreen().catch(() => {});
-  }, [containerRef]);
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => {});
+      return;
+    }
+    if (document.fullscreenEnabled && node.requestFullscreen) {
+      void node.requestFullscreen().catch(() => {});
+      return;
+    }
+    // iPhone Safari has no Fullscreen API for elements; only the video itself
+    // can go fullscreen, in the system player. It throws until metadata loads.
+    try {
+      resolveVideo(mediaRef.current as MediaHost | null)?.webkitEnterFullscreen?.();
+    } catch {
+      // Not ready yet — a second tap once it has loaded will work.
+    }
+  }, [containerRef, mediaRef]);
 
   const seek = useCallback(
     (value: number) => {
