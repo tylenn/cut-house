@@ -36,20 +36,6 @@ function resolveMedia(el: MediaHost | null): MediaLike | null {
   return el;
 }
 
-/** The prefixed API iPhone Safari uses in place of the Fullscreen API. */
-type WebkitVideo = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
-
-/**
- * The real <video> behind the media — itself for a plain video, the element
- * mux-video wraps (`nativeEl`) for Mux.
- */
-function resolveVideo(el: MediaHost | null): WebkitVideo | null {
-  const media = resolveMedia(el);
-  if (media instanceof HTMLVideoElement) return media;
-  const native = (media as { nativeEl?: unknown } | null)?.nativeEl;
-  return native instanceof HTMLVideoElement ? native : null;
-}
-
 type Props = {
   mediaRef: React.RefObject<MediaLike | null>;
   containerRef: React.RefObject<HTMLElement | null>;
@@ -65,6 +51,9 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
+  // Stand-in for fullscreen where the Fullscreen API is missing (iPhone): the
+  // player fills the viewport with the same chrome. See globals.css.
+  const [expanded, setExpanded] = useState(false);
   const [idle, setIdle] = useState(false);
   const [scrubbing, setScrubbing] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -172,6 +161,25 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
     return () => document.removeEventListener("fullscreenchange", onChange);
   }, []);
 
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!expanded || !node) return;
+    const root = document.documentElement;
+    const overflow = root.style.overflow;
+    node.dataset.playerExpanded = "";
+    // The page behind must not scroll under the player.
+    root.style.overflow = "hidden";
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setExpanded(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      delete node.dataset.playerExpanded;
+      root.style.overflow = overflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [expanded, containerRef]);
+
   // ---- actions ----------------------------------------------------------
   const toggle = useCallback(() => {
     const media = resolveMedia(mediaRef.current as MediaHost | null) ?? mediaRef.current;
@@ -200,22 +208,18 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
   const toggleFullscreen = useCallback(() => {
     const node = containerRef.current;
     if (!node) return;
-    if (document.fullscreenElement) {
+    if (expanded) setExpanded(false);
+    else if (document.fullscreenElement) {
       void document.exitFullscreen().catch(() => {});
-      return;
-    }
-    if (document.fullscreenEnabled && node.requestFullscreen) {
+    } else if (document.fullscreenEnabled && node.requestFullscreen) {
       void node.requestFullscreen().catch(() => {});
-      return;
+    } else {
+      // iPhone Safari only fullscreens a bare <video>, in its own player.
+      setExpanded(true);
     }
-    // iPhone Safari has no Fullscreen API for elements; only the video itself
-    // can go fullscreen, in the system player. It throws until metadata loads.
-    try {
-      resolveVideo(mediaRef.current as MediaHost | null)?.webkitEnterFullscreen?.();
-    } catch {
-      // Not ready yet — a second tap once it has loaded will work.
-    }
-  }, [containerRef, mediaRef]);
+  }, [containerRef, expanded]);
+
+  const isFullscreen = fullscreen || expanded;
 
   const seek = useCallback(
     (value: number) => {
@@ -281,10 +285,10 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
         <button
           type="button"
           onClick={toggleFullscreen}
-          aria-label={fullscreen ? "Exit fullscreen" : "Fullscreen"}
+          aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
           className="ml-4 shrink-0 text-(length:--text-body) text-(--color-page) focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--color-page)"
         >
-          {fullscreen ? "close" : "fullscreen"}
+          {isFullscreen ? "close" : "fullscreen"}
         </button>
 
         <input
