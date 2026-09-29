@@ -58,9 +58,12 @@ export function ProjectCard({
 
   const meta = (
     <div className="pt-1 leading-tight">
-      <div className="font-semibold">{label}</div>
+      {/* Phones: title 1px and role 2px under the body size, so the title
+          still leads. Desktop keeps both at the body size. */}
+      <div className="text-[length:calc(var(--text-body)-1px)] font-semibold md:text-(length:--text-body)">
+        {label}
+      </div>
       {roles?.length ? (
-        // 2px smaller on phones; desktop keeps the body size.
         <div className="text-[length:calc(var(--text-body)-2px)] text-(--color-ink-muted) transition-colors duration-(--duration-fast) group-hover:text-(--color-ink) md:text-(length:--text-body)">
           {roles.join(", ")}
         </div>
