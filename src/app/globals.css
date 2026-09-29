@@ -48,7 +48,7 @@
   --duration-base: 320ms;
   --duration-slow: 620ms;
   /* How far the other grid tiles fade while one is hovered. */
-  --opacity-grid-dim: 0.4;
+  --opacity-grid-dim: 0.5;
 
   /* Site reveals — everything except the one-time intro. */
   --ease-reveal: cubic-bezier(0.19, 1, 0.22, 1);
