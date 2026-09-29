@@ -24,8 +24,8 @@ export function SiteFooter({ links }: { links: Link[] }) {
           ))}
         </ul>
       ) : null}
-      {/* Fine print: 3px under the body size. */}
-      <div className="flex justify-between text-[length:calc(var(--text-body)-3px)] text-(--color-ink-muted)">
+      {/* Fine print: 3px under the body size, in the faintest grey. */}
+      <div className="flex justify-between text-[length:calc(var(--text-body)-3px)] text-(--color-ink-faint)">
         <span>{COPYRIGHT_HOLDER}. All rights reserved.</span>
         <span>© {new Date().getFullYear()}</span>
       </div>
