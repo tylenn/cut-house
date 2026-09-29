@@ -45,8 +45,6 @@ export function ProjectMedia({
     const frame = frameRef.current;
     if (!frame || !loopUrl || introSplash) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         const video = videoRef.current;

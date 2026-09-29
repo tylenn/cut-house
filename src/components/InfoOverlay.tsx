@@ -47,11 +47,6 @@ export function InfoOverlay({ children, mode = "page", onDismiss }: Props) {
   const dismiss = useCallback(() => {
     if (closing) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      finishDismiss();
-      return;
-    }
-
     setClosing(true);
     window.setTimeout(finishDismiss, MOTION_REVEAL_OUT_MS);
   }, [closing, finishDismiss]);

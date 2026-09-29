@@ -22,12 +22,6 @@ export function SiteOpening({ tagline }: { tagline: string }) {
   useLayoutEffect(() => {
     if (hasSiteIntroPlayed()) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      markSiteIntroPlayed();
-      clearSiteIntro();
-      return;
-    }
-
     if (pathname !== "/") {
       markSiteIntroPlayed();
       clearSiteIntro();

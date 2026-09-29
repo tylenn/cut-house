@@ -17,7 +17,6 @@ export function HomeReturn({ children }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (document.documentElement.dataset.siteIntro) return;
     if (!hasSiteIntroPlayed()) return;
     if (document.documentElement.dataset.skipHomeEnter) {
