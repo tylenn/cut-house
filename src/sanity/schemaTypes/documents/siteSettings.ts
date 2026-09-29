@@ -25,7 +25,7 @@ export const siteSettings = defineType({
       type: "string",
       group: "general",
       description:
-        'The line under the name — "A global production company driven by culture".',
+        'The line under the name — "A global production services company".',
     }),
     defineField({
       name: "description",
