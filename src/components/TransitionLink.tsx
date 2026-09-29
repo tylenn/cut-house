@@ -35,8 +35,7 @@ export function TransitionLink({ href, onClick, ...props }: Props) {
           event.ctrlKey ||
           event.shiftKey ||
           event.altKey ||
-          event.button !== 0 ||
-          window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          event.button !== 0
         ) {
           return;
         }

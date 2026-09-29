@@ -70,7 +70,7 @@ export function formatSiteTitle(name: string): string {
 }
 
 /** Runs before paint on the home page so the first view can open cold. */
-export const SITE_INTRO_BOOTSTRAP = `(function(){try{if(sessionStorage.getItem("${SITE_INTRO_KEY}"))return;if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){sessionStorage.setItem("${SITE_INTRO_KEY}","1");return}if(location.pathname==="/")document.documentElement.dataset.siteIntro="splash"}catch(e){}})();`;
+export const SITE_INTRO_BOOTSTRAP = `(function(){try{if(sessionStorage.getItem("${SITE_INTRO_KEY}"))return;if(location.pathname==="/")document.documentElement.dataset.siteIntro="splash"}catch(e){}})();`;
 
 export function setSiteIntroPhase(phase: SiteIntroPhase): void {
   document.documentElement.dataset.siteIntro = phase;
