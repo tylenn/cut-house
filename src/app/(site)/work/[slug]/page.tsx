@@ -95,7 +95,8 @@ export default async function ProjectPage({ params }: Props) {
         </h1>
 
         {project.roles?.length || project.credits?.length ? (
-          <div className="mt-3 text-(--color-ink-muted)">
+          // Phones: 1px smaller and 2px closer to the title than desktop.
+          <div className="mt-2.5 text-[length:calc(var(--text-body)-1px)] text-(--color-ink-muted) md:mt-3 md:text-(length:--text-body)">
             {/* His row first, and in full ink: the same role/name shape as
                 everyone below, but it is the one the visitor came for. */}
             {project.roles?.length ? (
