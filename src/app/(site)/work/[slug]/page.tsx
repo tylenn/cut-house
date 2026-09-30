@@ -88,9 +88,10 @@ export default async function ProjectPage({ params }: Props) {
         ) : null}
 
       <header className="pt-2">
-        {/* Phones: 5px under the title size and regular weight, so it sits
-            below the wordmark. Desktop keeps the full title, semibold. */}
-        <h1 className="text-[length:calc(var(--text-title)-5px)] leading-(--text-title--line-height) font-normal md:text-(length:--text-title) md:font-semibold">
+        {/* Phones: 5px under the title size, regular weight and the credits'
+            grey, so it sits below the wordmark. Desktop keeps the full title,
+            semibold, in ink. */}
+        <h1 className="text-[length:calc(var(--text-title)-5px)] leading-(--text-title--line-height) font-normal text-(--color-ink-muted) md:text-(length:--text-title) md:font-semibold md:text-(--color-ink)">
           {project.title}
           {project.client ? ` — ${project.client}` : null}
         </h1>
