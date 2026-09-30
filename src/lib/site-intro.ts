@@ -10,7 +10,7 @@ export const SITE_INTRO_TAGLINE_IN_DELAY_MS = 400;
 export const SITE_INTRO_TAGLINE_IN_DURATION_MS = 2500;
 
 /** How long the tagline sits fully visible. */
-export const SITE_INTRO_TAGLINE_HOLD_MS = 2500;
+export const SITE_INTRO_TAGLINE_HOLD_MS = 2100;
 
 /** Tagline fade-out to white — keep in sync with globals.css. */
 export const SITE_INTRO_TAGLINE_OUT_DURATION_MS = 640;
