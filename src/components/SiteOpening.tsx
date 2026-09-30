@@ -5,7 +5,6 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 
 import {
   SITE_INTRO_PAGE_AT_MS,
-  SITE_INTRO_TAGLINE_OUT_AT_MS,
   clearSiteIntro,
   getSiteIntroDoneAtMs,
   hasSiteIntroPlayed,
@@ -18,9 +17,10 @@ import {
  * then Cut House, the grid, and nav/footer in a tight stagger.
  *
  * With an opening clip set in the Studio, the clip plays behind a white
- * tagline and fades out with it. It is fetched only when the splash actually
- * runs, and shown only once it is playing: a blocked autoplay (iPhone Low
- * Power Mode) or a slow network leaves the plain white opening.
+ * tagline, outlasts it, and dissolves straight into the page as the page
+ * reveals, with no white beat between. It is fetched only when the splash
+ * actually runs, and shown only once it is playing: a blocked autoplay
+ * (iPhone Low Power Mode) or a slow network leaves the plain white opening.
  */
 export function SiteOpening({
   tagline,
@@ -30,6 +30,7 @@ export function SiteOpening({
   clipUrl?: string;
 }) {
   const pathname = usePathname();
+  const backdropRef = useRef<HTMLDivElement>(null);
   const clipRef = useRef<HTMLVideoElement>(null);
   const taglineRef = useRef<HTMLParagraphElement>(null);
 
@@ -55,6 +56,7 @@ export function SiteOpening({
 
     if (!document.documentElement.dataset.siteIntro) return;
 
+    const backdrop = backdropRef.current;
     const clip = clipRef.current;
     const onPlaying = () => {
       if (!clip || clip.dataset.state === "out") return;
@@ -68,16 +70,19 @@ export function SiteOpening({
       void clip.play().catch(() => {});
     }
 
-    // Out with the tagline, whether or not the clip ever showed.
-    const clipOut = window.setTimeout(() => {
-      if (clip) clip.dataset.state = "out";
-    }, SITE_INTRO_TAGLINE_OUT_AT_MS);
-
     const toPage = window.setTimeout(() => {
+      // A playing clip holds the backdrop open, clear of its white, and fades
+      // over the page as it reveals. One that never started just goes, and
+      // the page reveals on white as without a clip.
+      if (clip?.dataset.state === "ready" && backdrop) {
+        backdrop.dataset.clip = "fading";
+      }
+      if (clip) clip.dataset.state = "out";
       setSiteIntroPhase("chrome");
     }, SITE_INTRO_PAGE_AT_MS);
 
     const done = window.setTimeout(() => {
+      if (backdrop) delete backdrop.dataset.clip;
       clip?.pause();
       clearSiteIntro();
       markSiteIntroPlayed();
@@ -86,7 +91,7 @@ export function SiteOpening({
     return () => {
       clip?.removeEventListener("playing", onPlaying);
       clip?.pause();
-      window.clearTimeout(clipOut);
+      if (backdrop) delete backdrop.dataset.clip;
       window.clearTimeout(toPage);
       window.clearTimeout(done);
     };
@@ -94,7 +99,7 @@ export function SiteOpening({
 
   return (
     <>
-      <div className="site-opening-backdrop" aria-hidden>
+      <div ref={backdropRef} className="site-opening-backdrop" aria-hidden>
         {clipUrl && pathname === "/" ? (
           // preload="none": nothing is fetched unless the splash plays it.
           <video

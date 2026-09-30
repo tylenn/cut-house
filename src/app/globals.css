@@ -379,7 +379,8 @@ html[data-site-intro="splash"] .site-chrome {
 }
 
 /* Opening clip, behind the tagline. SiteOpening sets data-state: "ready"
-   once it is actually playing, "out" when the tagline fades. */
+   once it is actually playing, "out" as the page reveals. A playing clip
+   keeps the backdrop up, see-through, so it dissolves over the page. */
 .site-opening-clip {
   position: absolute;
   inset: 0;
@@ -395,7 +396,12 @@ html[data-site-intro="splash"] .site-chrome {
 }
 
 .site-opening-clip[data-state="out"] {
-  transition-duration: var(--duration-opening-tagline-out);
+  transition-duration: var(--duration-opening-grid);
+}
+
+.site-opening-backdrop[data-clip="fading"] {
+  display: block;
+  background: transparent;
 }
 
 .site-opening-tagline[data-on-clip] {
