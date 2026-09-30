@@ -144,7 +144,8 @@ export default async function ProjectPage({ params }: Props) {
             href={project.externalUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 inline-block underline underline-offset-2"
+            // Phones match the credits' size; bold rather than underlined.
+            className="mt-3 inline-block text-[length:calc(var(--text-body)-2px)] font-semibold md:text-(length:--text-body)"
           >
             View the campaign
           </a>
