@@ -6,8 +6,8 @@ export type SiteIntroPhase = "splash" | "grid" | "chrome";
 /** Plain white before the tagline starts in — keep in sync with globals.css. */
 export const SITE_INTRO_TAGLINE_IN_DELAY_MS = 500;
 
-/** Tagline fade-in — keep in sync with globals.css. */
-export const SITE_INTRO_TAGLINE_IN_DURATION_MS = 480;
+/** Tagline left-to-right reveal — keep in sync with globals.css. */
+export const SITE_INTRO_TAGLINE_IN_DURATION_MS = 1200;
 
 /** How long the tagline sits fully visible. */
 export const SITE_INTRO_TAGLINE_HOLD_MS = 2000;

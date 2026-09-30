@@ -67,9 +67,10 @@
   --stagger-opening-chrome-step: 35ms;
   /* Plain white first, then the tagline. */
   --delay-opening-tagline-in: 500ms;
-  --duration-opening-tagline-in: 480ms;
-  /* Delay + fade-in + a 2000ms hold. */
-  --delay-opening-tagline-out: 2980ms;
+  /* Left-to-right reveal. */
+  --duration-opening-tagline-in: 1200ms;
+  /* Delay + reveal + a 2000ms hold. */
+  --delay-opening-tagline-out: 3700ms;
   --duration-opening-tagline-out: 640ms;
 }
 
@@ -189,14 +190,16 @@
   }
 }
 
+/* A soft edge, the tagline's width, sweeps left to right across it. The
+   mask is three widths wide: opaque, a gradient, then clear. */
 @keyframes site-splash-tagline-in {
   from {
-    opacity: 0;
-    filter: blur(8px);
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
   }
   to {
-    opacity: 1;
-    filter: blur(0);
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
   }
 }
 
@@ -418,9 +421,15 @@ html[data-site-intro="splash"] .site-chrome-mobile {
 
 html[data-site-intro="splash"] .site-opening-tagline {
   display: block;
+  -webkit-mask-image: linear-gradient(90deg, #000 33.33%, transparent 66.67%);
+  mask-image: linear-gradient(90deg, #000 33.33%, transparent 66.67%);
+  -webkit-mask-size: 300% 100%;
+  mask-size: 300% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   animation:
-    site-splash-tagline-in var(--duration-opening-tagline-in) var(--ease-reveal)
-      var(--delay-opening-tagline-in) both,
+    site-splash-tagline-in var(--duration-opening-tagline-in)
+      var(--ease-in-out-firm) var(--delay-opening-tagline-in) both,
     site-splash-tagline-out var(--duration-opening-tagline-out) var(--ease-reveal)
       var(--delay-opening-tagline-out) forwards;
 }
