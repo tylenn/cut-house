@@ -371,7 +371,10 @@ html[data-site-intro="splash"] .site-chrome {
   text-align: center;
   /* 2px smaller on phones; desktop gets the full size below. */
   font-size: calc(var(--text-opening-tagline) - 2px);
-  font-weight: 700;
+  /* Between regular and bold. Helvetica has no such weight on Apple devices
+     and would round up to bold; Helvetica Neue has a Medium. */
+  font-family: "Helvetica Neue", var(--font-sans);
+  font-weight: 500;
   line-height: var(--text-opening-tagline--line-height);
   color: var(--color-ink);
   pointer-events: none;
