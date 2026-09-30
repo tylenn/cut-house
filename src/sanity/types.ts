@@ -827,8 +827,7 @@ export type INFO_PAGE_QUERY_RESULT =
   | null;
 
 // Query TypeMap
-import "@sanity/client";
-declare module "@sanity/client" {
+declare global {
   interface SanityQueries {
     '\n  *[_type == "project" && hidden != true] | order(coalesce(orderRank, 999999) asc, date desc) {\n    _id,\n    title,\n    "slug": slug.current,\n    client,\n    date,\n    summary,\n    featured,\n    roles,\n    poster { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    "loopUrl": loop.asset->url,\n    video { \n  "playbackId": asset->playbackId,\n  "aspectRatio": asset->data.aspect_ratio,\n  "duration": asset->data.duration,\n  "status": asset->status\n }\n  }\n': PROJECTS_QUERY_RESULT;
     '\n  *[_type == "project" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    client,\n    date,\n    summary,\n    body[] {\n      ...,\n      _type == "inlineImage" => { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n, caption },\n      markDefs[] { ... }\n    },\n    roles,\n    credits[] { _key, role, name, url },\n    categories[]-> { _id, title, "slug": slug.current },\n    externalUrl,\n    poster { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    gallery[] { _key, \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n, caption },\n    video { \n  "playbackId": asset->playbackId,\n  "aspectRatio": asset->data.aspect_ratio,\n  "duration": asset->data.duration,\n  "status": asset->status\n },\n    additionalVideos[] { _key, label, video { \n  "playbackId": asset->playbackId,\n  "aspectRatio": asset->data.aspect_ratio,\n  "duration": asset->data.duration,\n  "status": asset->status\n } },\n    seo { title, description, noIndex, image { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n } }\n  }\n': PROJECT_QUERY_RESULT;
@@ -838,4 +837,8 @@ declare module "@sanity/client" {
     '\n  *[_id == "siteSettings"][0] {\n    title,\n    tagline,\n    description,\n    email,\n    socialLinks[] { _key, label, url },\n    lettermark { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    ogImage { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    "resumeUrl": resume.asset->url,\n    "openingClipUrl": openingClip.asset->url\n  }\n': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_id == "infoPage"][0] {\n    heading,\n    availability,\n    application,\n    bio[] {\n      ...,\n      _type == "inlineImage" => { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n, caption },\n      markDefs[] { ... }\n    },\n    readMoreUrl,\n    portrait { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    clients,\n    seo { title, description, noIndex, image { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n } }\n  }\n': INFO_PAGE_QUERY_RESULT;
   }
+}
+// Lets @sanity/client releases that predate the global registry read it too
+declare module "@sanity/client" {
+  interface SanityQueries extends globalThis.SanityQueries {}
 }
