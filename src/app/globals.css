@@ -369,12 +369,42 @@ html[data-site-intro="splash"] .site-chrome {
   line-height: var(--text-opening-tagline--line-height);
   color: var(--color-ink);
   pointer-events: none;
+  transition: color var(--duration-opening-tagline-in) var(--ease-reveal);
 }
 
 @media (min-width: 768px) {
   .site-opening-tagline {
     font-size: var(--text-opening-tagline);
   }
+}
+
+/* Opening clip, behind the tagline. SiteOpening sets data-state: "ready"
+   once it is actually playing, "out" when the tagline fades. */
+.site-opening-clip {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--duration-opening-tagline-in) var(--ease-reveal);
+}
+
+.site-opening-clip[data-state="ready"] {
+  opacity: 1;
+}
+
+.site-opening-clip[data-state="out"] {
+  transition-duration: var(--duration-opening-tagline-out);
+}
+
+.site-opening-tagline[data-on-clip] {
+  color: var(--color-page);
+}
+
+/* The mobile bar's frosted white would sit over the clip as a strip. */
+html[data-site-intro="splash"] .site-chrome-mobile {
+  visibility: hidden;
 }
 
 html[data-site-intro="splash"] .site-opening-tagline {

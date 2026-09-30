@@ -54,6 +54,15 @@ export const siteSettings = defineType({
       description: "The tiny icon in the browser tab. A square image works best.",
     }),
     defineField({
+      name: "openingClip",
+      title: "Opening clip",
+      type: "file",
+      group: "brand",
+      description:
+        "Plays behind the tagline the first time someone opens the site, then fades into the page. Keep it small: a few seconds, no sound, 720p or lower, MP4. Leave empty for plain white.",
+      options: { accept: "video/mp4,video/webm" },
+    }),
+    defineField({
       name: "ogImage",
       title: "Default sharing image",
       type: "image",

@@ -28,7 +28,11 @@ export default async function SiteLayout({
   return (
     <>
       <PageTransitionObserver />
-      <SiteOpening tagline={tagline} />
+      {/* The unencoded settings: stega must not touch a media URL. */}
+      <SiteOpening
+        tagline={tagline}
+        clipUrl={seoSettings?.openingClipUrl ?? undefined}
+      />
       {seoSettings ? <JsonLd data={siteJsonLd(seoSettings)} /> : null}
       <div className="flex min-h-dvh flex-col md:block md:min-h-screen">
         <Rail name={name} />
