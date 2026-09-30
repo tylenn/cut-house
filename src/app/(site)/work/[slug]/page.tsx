@@ -144,8 +144,9 @@ export default async function ProjectPage({ params }: Props) {
             href={project.externalUrl}
             target="_blank"
             rel="noopener noreferrer"
-            // Phones match the credits' size; bold rather than underlined.
-            className="mt-3 inline-block text-[length:calc(var(--text-body)-2px)] font-semibold md:text-(length:--text-body)"
+            // Phones match the credits' size; bold rather than underlined. On
+            // desktop it fades to grey on hover.
+            className="mt-3 inline-block text-[length:calc(var(--text-body)-2px)] font-semibold transition-colors duration-(--duration-fast) md:text-(length:--text-body) md:hover:text-(--color-ink-muted)"
           >
             View the campaign
           </a>
