@@ -68,9 +68,9 @@
   /* Plain white first, then the tagline. */
   --delay-opening-tagline-in: 400ms;
   /* Left-to-right reveal. */
-  --duration-opening-tagline-in: 2500ms;
+  --duration-opening-tagline-in: 3000ms;
   /* Delay + reveal + a 2100ms hold. */
-  --delay-opening-tagline-out: 5000ms;
+  --delay-opening-tagline-out: 5500ms;
   --duration-opening-tagline-out: 640ms;
 }
 
