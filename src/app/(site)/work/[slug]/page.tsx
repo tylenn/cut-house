@@ -118,7 +118,7 @@ export default async function ProjectPage({ params }: Props) {
                 {project.credits.map((entry) => (
                   <div key={entry._key} className="flex items-start justify-between gap-6 md:justify-start">
                     <dt className="shrink-0 md:min-w-0 md:shrink">{entry.role}</dt>
-                    <dd className="min-w-0 text-right text-(--color-ink) md:shrink-0 md:whitespace-nowrap md:text-left md:text-(--color-ink-muted)">
+                    <dd className="min-w-0 text-right text-(--color-ink) md:shrink-0 md:whitespace-nowrap md:text-left">
                       {entry.url ? (
                         <a
                           href={entry.url}
