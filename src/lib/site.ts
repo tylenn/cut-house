@@ -26,5 +26,11 @@ export function resolveSiteTagline(cmsTagline?: string | null): string {
 export const DEFAULT_DESCRIPTION =
   "Cut House is a global production services company. Cinematography and editing by Tylen — purpose-driven visuals for film, advertising, and commercial work.";
 
-/** Name against the first row of a project's credits, above collaborators. */
+/** The person behind the work: page author in metadata and in JSON-LD. */
 export const PRINCIPAL = "Tylen";
+
+/**
+ * The name against the first row of a project's credits, above collaborators.
+ * Kept apart from PRINCIPAL, which must stay a plain person's name.
+ */
+export const PRINCIPAL_CREDIT = `${PRINCIPAL} of ${COPYRIGHT_HOLDER}`;

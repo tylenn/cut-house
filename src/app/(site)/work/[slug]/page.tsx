@@ -5,7 +5,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { PortableText } from "@/components/PortableText";
 import { ProjectPageStagger } from "@/components/ProjectPageStagger";
 import { pageMetadata, projectJsonLd, projectShareImageUrl } from "@/lib/seo";
-import { PRINCIPAL } from "@/lib/site";
+import { PRINCIPAL_CREDIT } from "@/lib/site";
 import { SanityImage } from "@/components/SanityImage";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { client } from "@/sanity/lib/client";
@@ -107,7 +107,7 @@ export default async function ProjectPage({ params }: Props) {
                 <div className="flex items-start justify-between gap-6 md:justify-start">
                   <dt className="min-w-0">{project.roles.join(", ")}</dt>
                   <dd className="shrink-0 whitespace-nowrap text-right text-(--color-ink)">
-                    {PRINCIPAL}
+                    {PRINCIPAL_CREDIT}
                   </dd>
                 </div>
               </dl>
