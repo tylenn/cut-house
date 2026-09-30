@@ -114,7 +114,8 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     socialLinks[] { _key, label, url },
     lettermark { ${IMAGE_FRAGMENT} },
     ogImage { ${IMAGE_FRAGMENT} },
-    "resumeUrl": resume.asset->url
+    "resumeUrl": resume.asset->url,
+    "openingClipUrl": openingClip.asset->url
   }
 `);
 

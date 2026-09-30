@@ -155,6 +155,11 @@ export type SiteSettings = {
     crop?: SanityImageCrop;
     _type: "image";
   };
+  openingClip?: {
+    asset?: SanityFileAssetReference;
+    media?: unknown;
+    _type: "file";
+  };
   ogImage?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -656,7 +661,7 @@ export type SITEMAP_QUERY_RESULT = Array<{
 
 // Source: src/sanity/lib/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_id == "siteSettings"][0] {    title,    tagline,    description,    email,    socialLinks[] { _key, label, url },    lettermark {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions },    ogImage {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions },    "resumeUrl": resume.asset->url  }
+// Query: *[_id == "siteSettings"][0] {    title,    tagline,    description,    email,    socialLinks[] { _key, label, url },    lettermark {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions },    ogImage {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions },    "resumeUrl": resume.asset->url,    "openingClipUrl": openingClip.asset->url  }
 export type SITE_SETTINGS_QUERY_RESULT =
   | {
       title: null;
@@ -667,6 +672,7 @@ export type SITE_SETTINGS_QUERY_RESULT =
       lettermark: null;
       ogImage: null;
       resumeUrl: null;
+      openingClipUrl: null;
     }
   | {
       title: string | null;
@@ -677,6 +683,7 @@ export type SITE_SETTINGS_QUERY_RESULT =
       lettermark: null;
       ogImage: null;
       resumeUrl: null;
+      openingClipUrl: null;
     }
   | {
       title: string | null;
@@ -687,6 +694,7 @@ export type SITE_SETTINGS_QUERY_RESULT =
       lettermark: null;
       ogImage: null;
       resumeUrl: null;
+      openingClipUrl: null;
     }
   | {
       title: string | null;
@@ -715,6 +723,7 @@ export type SITE_SETTINGS_QUERY_RESULT =
         dimensions: SanityImageDimensions | null;
       } | null;
       resumeUrl: string | null;
+      openingClipUrl: string | null;
     }
   | null;
 
@@ -826,7 +835,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "project" && hidden != true] | order(coalesce(orderRank, 999999) asc, date desc) {\n    title,\n    "slug": slug.current\n  }\n': PROJECT_ORDER_QUERY_RESULT;
     '\n  *[_type == "project" && defined(slug.current)].slug.current\n': PROJECT_SLUGS_QUERY_RESULT;
     '\n  *[_type == "project" && hidden != true && defined(slug.current)] {\n    "slug": slug.current,\n    _updatedAt\n  }\n': SITEMAP_QUERY_RESULT;
-    '\n  *[_id == "siteSettings"][0] {\n    title,\n    tagline,\n    description,\n    email,\n    socialLinks[] { _key, label, url },\n    lettermark { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    ogImage { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    "resumeUrl": resume.asset->url\n  }\n': SITE_SETTINGS_QUERY_RESULT;
+    '\n  *[_id == "siteSettings"][0] {\n    title,\n    tagline,\n    description,\n    email,\n    socialLinks[] { _key, label, url },\n    lettermark { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    ogImage { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    "resumeUrl": resume.asset->url,\n    "openingClipUrl": openingClip.asset->url\n  }\n': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_id == "infoPage"][0] {\n    heading,\n    availability,\n    application,\n    bio[] {\n      ...,\n      _type == "inlineImage" => { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n, caption },\n      markDefs[] { ... }\n    },\n    readMoreUrl,\n    portrait { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    clients,\n    seo { title, description, noIndex, image { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n } }\n  }\n': INFO_PAGE_QUERY_RESULT;
   }
 }
