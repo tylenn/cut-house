@@ -3,17 +3,22 @@ export const SITE_INTRO_GRID_CLASS = "site-intro-grid";
 
 export type SiteIntroPhase = "splash" | "grid" | "chrome";
 
-/** Tagline fade-in — keep in sync with globals.css. */
-export const SITE_INTRO_TAGLINE_IN_DURATION_MS = 480;
+/** Plain white before the tagline starts in — keep in sync with globals.css. */
+export const SITE_INTRO_TAGLINE_IN_DELAY_MS = 400;
+
+/** Tagline left-to-right reveal — keep in sync with globals.css. */
+export const SITE_INTRO_TAGLINE_IN_DURATION_MS = 3000;
 
 /** How long the tagline sits fully visible. */
-export const SITE_INTRO_TAGLINE_HOLD_MS = 2000;
+export const SITE_INTRO_TAGLINE_HOLD_MS = 2100;
 
 /** Tagline fade-out to white — keep in sync with globals.css. */
 export const SITE_INTRO_TAGLINE_OUT_DURATION_MS = 640;
 
 export const SITE_INTRO_TAGLINE_OUT_AT_MS =
-  SITE_INTRO_TAGLINE_IN_DURATION_MS + SITE_INTRO_TAGLINE_HOLD_MS;
+  SITE_INTRO_TAGLINE_IN_DELAY_MS +
+  SITE_INTRO_TAGLINE_IN_DURATION_MS +
+  SITE_INTRO_TAGLINE_HOLD_MS;
 
 /** Full-white beat after the tagline is gone. */
 export const SITE_INTRO_WHITE_HOLD_MS = 480;
