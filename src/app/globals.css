@@ -69,8 +69,8 @@
   --delay-opening-tagline-in: 500ms;
   /* Left-to-right reveal. */
   --duration-opening-tagline-in: 1200ms;
-  /* Delay + reveal + a 2000ms hold. */
-  --delay-opening-tagline-out: 3700ms;
+  /* Delay + reveal + a 2500ms hold. */
+  --delay-opening-tagline-out: 4200ms;
   --duration-opening-tagline-out: 640ms;
 }
 
