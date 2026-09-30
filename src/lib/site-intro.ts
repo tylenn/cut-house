@@ -4,7 +4,7 @@ export const SITE_INTRO_GRID_CLASS = "site-intro-grid";
 export type SiteIntroPhase = "splash" | "grid" | "chrome";
 
 /** Plain white before the tagline starts in — keep in sync with globals.css. */
-export const SITE_INTRO_TAGLINE_IN_DELAY_MS = 500;
+export const SITE_INTRO_TAGLINE_IN_DELAY_MS = 400;
 
 /** Tagline left-to-right reveal — keep in sync with globals.css. */
 export const SITE_INTRO_TAGLINE_IN_DURATION_MS = 2500;

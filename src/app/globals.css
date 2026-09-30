@@ -66,11 +66,11 @@
   --stagger-opening-chrome-at: 180ms;
   --stagger-opening-chrome-step: 35ms;
   /* Plain white first, then the tagline. */
-  --delay-opening-tagline-in: 500ms;
+  --delay-opening-tagline-in: 400ms;
   /* Left-to-right reveal. */
   --duration-opening-tagline-in: 2500ms;
   /* Delay + reveal + a 2500ms hold. */
-  --delay-opening-tagline-out: 5500ms;
+  --delay-opening-tagline-out: 5400ms;
   --duration-opening-tagline-out: 640ms;
 }
 
