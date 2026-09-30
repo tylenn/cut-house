@@ -65,8 +65,11 @@
   --stagger-opening-grid-at: 90ms;
   --stagger-opening-chrome-at: 180ms;
   --stagger-opening-chrome-step: 35ms;
+  /* Plain white first, then the tagline. */
+  --delay-opening-tagline-in: 500ms;
   --duration-opening-tagline-in: 480ms;
-  --delay-opening-tagline-out: 2480ms;
+  /* Delay + fade-in + a 2000ms hold. */
+  --delay-opening-tagline-out: 2980ms;
   --duration-opening-tagline-out: 640ms;
 }
 
@@ -417,7 +420,7 @@ html[data-site-intro="splash"] .site-opening-tagline {
   display: block;
   animation:
     site-splash-tagline-in var(--duration-opening-tagline-in) var(--ease-reveal)
-      both,
+      var(--delay-opening-tagline-in) both,
     site-splash-tagline-out var(--duration-opening-tagline-out) var(--ease-reveal)
       var(--delay-opening-tagline-out) forwards;
 }
