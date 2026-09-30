@@ -100,7 +100,8 @@ export default async function ProjectPage({ params }: Props) {
           <div className="mt-2.5 text-[length:calc(var(--text-body)-2px)] text-(--color-ink-muted) md:mt-3 md:text-(length:--text-body)">
             {/* His row first, and in full ink: the same role/name shape as
                 everyone below, but it is the one the visitor came for.
-                Phones set every row full width, role left and name right. */}
+                Phones set every row full width, role left and name right, with
+                every name in ink. */}
             {project.roles?.length ? (
               <dl>
                 <div className="flex items-start justify-between gap-6 md:justify-start">
@@ -117,7 +118,7 @@ export default async function ProjectPage({ params }: Props) {
                 {project.credits.map((entry) => (
                   <div key={entry._key} className="flex items-start justify-between gap-6 md:justify-start">
                     <dt className="shrink-0 md:min-w-0 md:shrink">{entry.role}</dt>
-                    <dd className="min-w-0 text-right md:shrink-0 md:whitespace-nowrap md:text-left">
+                    <dd className="min-w-0 text-right text-(--color-ink) md:shrink-0 md:whitespace-nowrap md:text-left md:text-(--color-ink-muted)">
                       {entry.url ? (
                         <a
                           href={entry.url}
