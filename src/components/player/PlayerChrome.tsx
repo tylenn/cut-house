@@ -64,6 +64,15 @@ type Props = {
 
 const IDLE_AFTER = 2400;
 
+/** 0:05, 2:55, 1:02:15 — minutes unpadded, as players show time. */
+function formatTime(seconds: number): string {
+  const total = Math.max(0, Math.floor(seconds));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = String(total % 60).padStart(2, "0");
+  return h ? `${h}:${String(m).padStart(2, "0")}:${s}` : `${m}:${s}`;
+}
+
 export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -331,6 +340,13 @@ export function PlayerChrome({ mediaRef, containerRef, title }: Props) {
           className="player-scrub ml-4 min-w-0 flex-1"
           style={{ ["--progress" as string]: `${progress}%` }}
         />
+
+        {/* Elapsed / total, once the length is known. */}
+        {duration > 0 ? (
+          <span className="ml-4 shrink-0 text-(length:--text-body) text-(--color-page) tabular-nums">
+            {formatTime(time)} / {formatTime(duration)}
+          </span>
+        ) : null}
       </div>
     </div>
   );
