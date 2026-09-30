@@ -85,7 +85,8 @@ export function Rail({ name }: { name: string }) {
         style={{ "--i": 0 } as React.CSSProperties}
       >
         <div className="site-opening-brand min-w-0 flex-1">
-          <span className="site-opening-mobile-name text-(length:--text-title) leading-(--text-title--line-height) font-normal tracking-[-0.02em]">
+          {/* 1px over the title size. */}
+          <span className="site-opening-mobile-name text-[length:calc(var(--text-title)+1px)] leading-(--text-title--line-height) font-normal tracking-[-0.02em]">
             {mobileTitle}
           </span>
         </div>
