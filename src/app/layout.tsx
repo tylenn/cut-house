@@ -9,12 +9,13 @@ import {
   SITE_NAME,
 } from "@/lib/site";
 import { isPlaceholderProject, siteUrl } from "@/sanity/env";
-import { SanityLive } from "@/sanity/lib/live";
+import { SanityLive, sanityFetch } from "@/sanity/lib/live";
+import { SITE_ICON_QUERY } from "@/sanity/lib/queries";
 import { SITE_INTRO_BOOTSTRAP } from "@/lib/site-intro";
 
 import "./globals.css";
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: SITE_NAME,
@@ -65,6 +66,49 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
   },
 };
+
+/** Square PNG at `size` from a Sanity image URL (SVGs are rasterised too). */
+function iconAt(url: string, size: number) {
+  return {
+    url: `${url}?w=${size}&h=${size}&fit=crop&fm=png`,
+    sizes: `${size}x${size}`,
+    type: "image/png",
+  };
+}
+
+/**
+ * The favicon set in Site settings, falling back to the built-in mark in
+ * public/. Deliberately not app/icon.* or app/apple-icon.*: file-based icons
+ * override this, so a Studio upload would never show.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  // Every page, the Studio included, runs this: an icon is not worth failing
+  // a page over, so any error falls back to the built-in mark.
+  let favicon: string | null = null;
+  if (!isPlaceholderProject) {
+    try {
+      ({ data: favicon } = await sanityFetch({
+        query: SITE_ICON_QUERY,
+        stega: false,
+      }));
+    } catch {
+      favicon = null;
+    }
+  }
+
+  return {
+    ...baseMetadata,
+    icons: favicon
+      ? {
+          icon: [iconAt(favicon, 32), iconAt(favicon, 192)],
+          apple: iconAt(favicon, 180),
+        }
+      : {
+          icon: { url: "/icon.svg", type: "image/svg+xml" },
+          apple: "/apple-icon.png",
+        },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#ffffff",
