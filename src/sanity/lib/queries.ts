@@ -105,6 +105,11 @@ export const SITEMAP_QUERY = defineQuery(`
   }
 `);
 
+/** The Studio favicon, for the root layout's <link rel="icon">. */
+export const SITE_ICON_QUERY = defineQuery(`
+  *[_id == "siteSettings"][0].favicon.asset->url
+`);
+
 export const SITE_SETTINGS_QUERY = defineQuery(`
   *[_id == "siteSettings"][0] {
     title,
