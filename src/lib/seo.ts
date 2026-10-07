@@ -8,7 +8,7 @@ import {
 } from "@/lib/site";
 import { siteUrl } from "@/sanity/env";
 import { urlFor } from "@/sanity/lib/image";
-import { muxPosterUrl } from "@/sanity/lib/mux";
+import { muxPosterUrl, posterTimeFor } from "@/sanity/lib/mux";
 
 const DEFAULT_SHARE_IMAGE = {
   url: "/og.png",
@@ -30,13 +30,17 @@ export function sanityShareUrl(image: ShareImage): string | undefined {
 export function projectShareImageUrl(project: {
   seo?: { image?: ShareImage } | null;
   poster?: ShareImage;
-  video?: { playbackId?: string | null } | null;
+  video?: { playbackId?: string | null; duration?: number | null } | null;
+  posterTime?: number | null;
 }): string | undefined {
   return (
     sanityShareUrl(project.seo?.image) ??
     sanityShareUrl(project.poster) ??
     (project.video?.playbackId
-      ? muxPosterUrl(project.video.playbackId, { width: 1200 })
+      ? muxPosterUrl(project.video.playbackId, {
+          width: 1200,
+          time: posterTimeFor(project.posterTime, project.video.duration),
+        })
       : undefined)
   );
 }

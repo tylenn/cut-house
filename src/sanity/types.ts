@@ -217,6 +217,7 @@ export type Project = {
   summary?: string;
   body?: RichText;
   video?: MuxVideo;
+  posterTime?: number;
   poster?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -506,7 +507,7 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/lib/queries.ts
 // Variable: PROJECTS_QUERY
-// Query: *[_type == "project" && hidden != true] | order(coalesce(orderRank, 999999) asc, date desc) {    _id,    title,    "slug": slug.current,    client,    date,    summary,    featured,    roles,    poster {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions },    "loopUrl": loop.asset->url,    video {   "playbackId": asset->playbackId,  "aspectRatio": asset->data.aspect_ratio,  "duration": asset->data.duration,  "status": asset->status }  }
+// Query: *[_type == "project" && hidden != true] | order(coalesce(orderRank, 999999) asc, date desc) {    _id,    title,    "slug": slug.current,    client,    date,    summary,    featured,    roles,    poster {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions },    "loopUrl": loop.asset->url,    video {   "playbackId": asset->playbackId,  "aspectRatio": asset->data.aspect_ratio,  "duration": asset->data.duration,  "status": asset->status },    posterTime  }
 export type PROJECTS_QUERY_RESULT = Array<{
   _id: string;
   title: string | null;
@@ -531,11 +532,12 @@ export type PROJECTS_QUERY_RESULT = Array<{
     duration: number | null;
     status: string | null;
   } | null;
+  posterTime: number | null;
 }>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: PROJECT_QUERY
-// Query: *[_type == "project" && slug.current == $slug][0] {    _id,    title,    "slug": slug.current,    client,    date,    summary,    body[] {      ...,      _type == "inlineImage" => {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions, caption },      markDefs[] { ... }    },    roles,    credits[] { _key, role, name, url },    categories[]-> { _id, title, "slug": slug.current },    externalUrl,    poster {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions },    gallery[] { _key,   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions, caption },    video {   "playbackId": asset->playbackId,  "aspectRatio": asset->data.aspect_ratio,  "duration": asset->data.duration,  "status": asset->status },    additionalVideos[] { _key, label, video {   "playbackId": asset->playbackId,  "aspectRatio": asset->data.aspect_ratio,  "duration": asset->data.duration,  "status": asset->status } },    seo { title, description, noIndex, image {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions } }  }
+// Query: *[_type == "project" && slug.current == $slug][0] {    _id,    title,    "slug": slug.current,    client,    date,    summary,    body[] {      ...,      _type == "inlineImage" => {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions, caption },      markDefs[] { ... }    },    roles,    credits[] { _key, role, name, url },    categories[]-> { _id, title, "slug": slug.current },    externalUrl,    poster {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions },    gallery[] { _key,   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions, caption },    video {   "playbackId": asset->playbackId,  "aspectRatio": asset->data.aspect_ratio,  "duration": asset->data.duration,  "status": asset->status },    posterTime,    additionalVideos[] { _key, label, video {   "playbackId": asset->playbackId,  "aspectRatio": asset->data.aspect_ratio,  "duration": asset->data.duration,  "status": asset->status } },    seo { title, description, noIndex, image {   asset,  hotspot,  crop,  alt,  "lqip": asset->metadata.lqip,  "dimensions": asset->metadata.dimensions } }  }
 export type PROJECT_QUERY_RESULT = {
   _id: string;
   title: string | null;
@@ -613,6 +615,7 @@ export type PROJECT_QUERY_RESULT = {
     duration: number | null;
     status: string | null;
   } | null;
+  posterTime: number | null;
   additionalVideos: Array<{
     _key: string;
     label: string | null;
@@ -834,8 +837,8 @@ export type INFO_PAGE_QUERY_RESULT =
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '\n  *[_type == "project" && hidden != true] | order(coalesce(orderRank, 999999) asc, date desc) {\n    _id,\n    title,\n    "slug": slug.current,\n    client,\n    date,\n    summary,\n    featured,\n    roles,\n    poster { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    "loopUrl": loop.asset->url,\n    video { \n  "playbackId": asset->playbackId,\n  "aspectRatio": asset->data.aspect_ratio,\n  "duration": asset->data.duration,\n  "status": asset->status\n }\n  }\n': PROJECTS_QUERY_RESULT;
-    '\n  *[_type == "project" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    client,\n    date,\n    summary,\n    body[] {\n      ...,\n      _type == "inlineImage" => { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n, caption },\n      markDefs[] { ... }\n    },\n    roles,\n    credits[] { _key, role, name, url },\n    categories[]-> { _id, title, "slug": slug.current },\n    externalUrl,\n    poster { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    gallery[] { _key, \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n, caption },\n    video { \n  "playbackId": asset->playbackId,\n  "aspectRatio": asset->data.aspect_ratio,\n  "duration": asset->data.duration,\n  "status": asset->status\n },\n    additionalVideos[] { _key, label, video { \n  "playbackId": asset->playbackId,\n  "aspectRatio": asset->data.aspect_ratio,\n  "duration": asset->data.duration,\n  "status": asset->status\n } },\n    seo { title, description, noIndex, image { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n } }\n  }\n': PROJECT_QUERY_RESULT;
+    '\n  *[_type == "project" && hidden != true] | order(coalesce(orderRank, 999999) asc, date desc) {\n    _id,\n    title,\n    "slug": slug.current,\n    client,\n    date,\n    summary,\n    featured,\n    roles,\n    poster { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    "loopUrl": loop.asset->url,\n    video { \n  "playbackId": asset->playbackId,\n  "aspectRatio": asset->data.aspect_ratio,\n  "duration": asset->data.duration,\n  "status": asset->status\n },\n    posterTime\n  }\n': PROJECTS_QUERY_RESULT;
+    '\n  *[_type == "project" && slug.current == $slug][0] {\n    _id,\n    title,\n    "slug": slug.current,\n    client,\n    date,\n    summary,\n    body[] {\n      ...,\n      _type == "inlineImage" => { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n, caption },\n      markDefs[] { ... }\n    },\n    roles,\n    credits[] { _key, role, name, url },\n    categories[]-> { _id, title, "slug": slug.current },\n    externalUrl,\n    poster { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n },\n    gallery[] { _key, \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n, caption },\n    video { \n  "playbackId": asset->playbackId,\n  "aspectRatio": asset->data.aspect_ratio,\n  "duration": asset->data.duration,\n  "status": asset->status\n },\n    posterTime,\n    additionalVideos[] { _key, label, video { \n  "playbackId": asset->playbackId,\n  "aspectRatio": asset->data.aspect_ratio,\n  "duration": asset->data.duration,\n  "status": asset->status\n } },\n    seo { title, description, noIndex, image { \n  asset,\n  hotspot,\n  crop,\n  alt,\n  "lqip": asset->metadata.lqip,\n  "dimensions": asset->metadata.dimensions\n } }\n  }\n': PROJECT_QUERY_RESULT;
     '\n  *[_type == "project" && hidden != true] | order(coalesce(orderRank, 999999) asc, date desc) {\n    title,\n    "slug": slug.current\n  }\n': PROJECT_ORDER_QUERY_RESULT;
     '\n  *[_type == "project" && defined(slug.current)].slug.current\n': PROJECT_SLUGS_QUERY_RESULT;
     '\n  *[_type == "project" && hidden != true && defined(slug.current)] {\n    "slug": slug.current,\n    _updatedAt\n  }\n': SITEMAP_QUERY_RESULT;

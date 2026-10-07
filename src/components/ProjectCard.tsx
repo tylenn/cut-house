@@ -1,7 +1,7 @@
 import { ProjectCardLink } from "@/components/ProjectCardLink";
 import { ProjectMedia } from "@/components/ProjectMedia";
 import { SanityImage } from "@/components/SanityImage";
-import { muxLoopUrl, muxPosterUrl } from "@/sanity/lib/mux";
+import { muxLoopUrl, muxPosterUrl, posterTimeFor } from "@/sanity/lib/mux";
 import type { StegaAware } from "@/sanity/lib/stega";
 import type { PROJECTS_QUERY_RESULT } from "@/sanity/types";
 
@@ -16,7 +16,7 @@ export function ProjectCard({
   index: number;
   priority?: boolean;
 }) {
-  const { title, slug, roles, poster, loopUrl, video } = project;
+  const { title, slug, roles, poster, loopUrl, video, posterTime } = project;
   if (!slug) return null;
 
   const playbackId = video?.playbackId ?? undefined;
@@ -25,7 +25,10 @@ export function ProjectCard({
 
   // uploaded asset -> Mux-generated -> nothing, for both the frame and the loop.
   const posterUrl = playbackId
-    ? muxPosterUrl(playbackId, { width: 1200 })
+    ? muxPosterUrl(playbackId, {
+        width: 1200,
+        time: posterTimeFor(posterTime, video?.duration),
+      })
     : undefined;
   const animatedUrl =
     loopUrl ??

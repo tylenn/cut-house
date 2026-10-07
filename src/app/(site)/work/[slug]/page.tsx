@@ -10,7 +10,7 @@ import { SanityImage } from "@/components/SanityImage";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { client } from "@/sanity/lib/client";
 import { sanityFetch } from "@/sanity/lib/live";
-import { muxAspectRatio, muxPosterUrl } from "@/sanity/lib/mux";
+import { muxAspectRatio, muxPosterUrl, posterTimeFor } from "@/sanity/lib/mux";
 import { PROJECT_QUERY, PROJECT_SLUGS_QUERY } from "@/sanity/lib/queries";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -71,7 +71,10 @@ export default async function ProjectPage({ params }: Props) {
             <VideoPlayer
               playbackId={playbackId}
               title={project.title ?? undefined}
-              poster={muxPosterUrl(playbackId, { width: 1600 })}
+              poster={muxPosterUrl(playbackId, {
+                width: 1600,
+                time: posterTimeFor(project.posterTime, project.video?.duration),
+              })}
               aspectRatio={aspectRatio}
             />
           </div>
