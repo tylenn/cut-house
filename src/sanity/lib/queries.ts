@@ -25,7 +25,8 @@ const VIDEO_FRAGMENT = /* groq */ `
   "playbackId": asset->playbackId,
   "aspectRatio": asset->data.aspect_ratio,
   "duration": asset->data.duration,
-  "status": asset->status
+  "status": asset->status,
+  "thumbTime": asset->thumbTime
 `;
 
 /**
@@ -47,8 +48,7 @@ export const PROJECTS_QUERY = defineQuery(`
     roles,
     poster { ${IMAGE_FRAGMENT} },
     "loopUrl": loop.asset->url,
-    video { ${VIDEO_FRAGMENT} },
-    posterTime
+    video { ${VIDEO_FRAGMENT} }
   }
 `);
 
@@ -72,7 +72,6 @@ export const PROJECT_QUERY = defineQuery(`
     poster { ${IMAGE_FRAGMENT} },
     gallery[] { _key, ${IMAGE_FRAGMENT}, caption },
     video { ${VIDEO_FRAGMENT} },
-    posterTime,
     additionalVideos[] { _key, label, video { ${VIDEO_FRAGMENT} } },
     seo { title, description, noIndex, image { ${IMAGE_FRAGMENT} } }
   }

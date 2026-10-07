@@ -22,7 +22,8 @@ export type MuxAsset = {
 } | null;
 
 /**
- * The Studio's per-project poster time, made safe for Mux: never negative,
+ * The frame picked with the Mux input's thumbnail option in the Studio
+ * (stored as the asset's thumbTime), made safe for Mux: never negative,
  * and pulled back inside the film when it points past the end (Mux would
  * otherwise fail the thumbnail). Undefined keeps Mux's automatic frame.
  */

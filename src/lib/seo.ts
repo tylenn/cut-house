@@ -30,8 +30,11 @@ export function sanityShareUrl(image: ShareImage): string | undefined {
 export function projectShareImageUrl(project: {
   seo?: { image?: ShareImage } | null;
   poster?: ShareImage;
-  video?: { playbackId?: string | null; duration?: number | null } | null;
-  posterTime?: number | null;
+  video?: {
+    playbackId?: string | null;
+    duration?: number | null;
+    thumbTime?: number | null;
+  } | null;
 }): string | undefined {
   return (
     sanityShareUrl(project.seo?.image) ??
@@ -39,7 +42,7 @@ export function projectShareImageUrl(project: {
     (project.video?.playbackId
       ? muxPosterUrl(project.video.playbackId, {
           width: 1200,
-          time: posterTimeFor(project.posterTime, project.video.duration),
+          time: posterTimeFor(project.video.thumbTime, project.video.duration),
         })
       : undefined)
   );
