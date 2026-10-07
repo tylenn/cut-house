@@ -78,16 +78,7 @@ export const project = defineType({
       type: "mux.video",
       group: "media",
       description:
-        "Drag the video file in. Everything else — the still frame, the hover preview, the quality options — is made for you.",
-    }),
-    defineField({
-      name: "posterTime",
-      title: "Poster time",
-      type: "number",
-      group: "media",
-      description:
-        "The second of the film to use as its still frame, e.g. 12 or 12.5. Leave empty for the frame Mux picks. An uploaded Still frame below still wins on the grid.",
-      validation: (Rule) => Rule.min(0),
+        "Drag the video file in. Everything else — the still frame, the hover preview, the quality options — is made for you. To choose the still frame, use this field's thumbnail option.",
     }),
     defineField({
       name: "poster",

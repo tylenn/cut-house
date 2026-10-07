@@ -73,7 +73,10 @@ export default async function ProjectPage({ params }: Props) {
               title={project.title ?? undefined}
               poster={muxPosterUrl(playbackId, {
                 width: 1600,
-                time: posterTimeFor(project.posterTime, project.video?.duration),
+                time: posterTimeFor(
+                  project.video?.thumbTime,
+                  project.video?.duration,
+                ),
               })}
               aspectRatio={aspectRatio}
             />
@@ -174,7 +177,13 @@ export default async function ProjectPage({ params }: Props) {
                 <VideoPlayer
                   playbackId={clipId}
                   title={clip.label ?? undefined}
-                  poster={muxPosterUrl(clipId, { width: 900 })}
+                  poster={muxPosterUrl(clipId, {
+                    width: 900,
+                    time: posterTimeFor(
+                      clip.video?.thumbTime,
+                      clip.video?.duration,
+                    ),
+                  })}
                   aspectRatio={muxAspectRatio(clip.video?.aspectRatio)}
                 />
                 {clip.label ? (

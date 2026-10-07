@@ -16,7 +16,7 @@ export function ProjectCard({
   index: number;
   priority?: boolean;
 }) {
-  const { title, slug, roles, poster, loopUrl, video, posterTime } = project;
+  const { title, slug, roles, poster, loopUrl, video } = project;
   if (!slug) return null;
 
   const playbackId = video?.playbackId ?? undefined;
@@ -27,7 +27,7 @@ export function ProjectCard({
   const posterUrl = playbackId
     ? muxPosterUrl(playbackId, {
         width: 1200,
-        time: posterTimeFor(posterTime, video?.duration),
+        time: posterTimeFor(video?.thumbTime, video?.duration),
       })
     : undefined;
   const animatedUrl =
