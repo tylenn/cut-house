@@ -21,6 +21,20 @@ export type MuxAsset = {
   duration?: number | null;
 } | null;
 
+/**
+ * The Studio's per-project poster time, made safe for Mux: never negative,
+ * and pulled back inside the film when it points past the end (Mux would
+ * otherwise fail the thumbnail). Undefined keeps Mux's automatic frame.
+ */
+export function posterTimeFor(
+  time: number | null | undefined,
+  duration?: number | null,
+): number | undefined {
+  if (time == null || !Number.isFinite(time)) return undefined;
+  const t = Math.max(0, time);
+  return duration && duration > 0 ? Math.min(t, Math.max(0, duration - 0.1)) : t;
+}
+
 export function muxPosterUrl(
   playbackId: string,
   options: { width?: number; time?: number } = {},
