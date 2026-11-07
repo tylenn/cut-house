@@ -35,12 +35,15 @@ export function VideoPlayer({ playbackId, title, poster, aspectRatio }: Props) {
 
   const ratio = aspectRatio ?? 16 / 9;
 
-  // A vertical film at full column width runs far taller than the screen, so
-  // it narrows to fit; landscape films keep the full width.
-  const frame: React.CSSProperties = {
+  // A vertical film at full column width runs far taller than a desktop
+  // screen, so from tablet width up it narrows to fit; landscape films, and
+  // every film on a phone, keep the full width. Phones are left alone because
+  // iOS measures the viewport around Safari's toolbars, which shrank the film.
+  const portraitWidth = portraitFrameWidth(ratio);
+  const frame = {
     aspectRatio: ratio,
-    width: portraitFrameWidth(ratio),
-  };
+    ...(portraitWidth ? { "--portrait-width": portraitWidth } : {}),
+  } as React.CSSProperties;
 
   const style: MuxCSSProperties = {
     width: "100%",
@@ -54,7 +57,9 @@ export function VideoPlayer({ playbackId, title, poster, aspectRatio }: Props) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full overflow-hidden bg-(--color-rule)"
+      className={`relative w-full overflow-hidden bg-(--color-rule) ${
+        portraitWidth ? "md:w-(--portrait-width)" : ""
+      }`}
       style={frame}
     >
       <MuxPlayer
