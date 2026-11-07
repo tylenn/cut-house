@@ -10,8 +10,8 @@ import { getInfoSheetData } from "@/sanity/lib/info";
  * cannot drift. It fetches its own data rather than taking props: both callers
  * would otherwise repeat the same two queries verbatim.
  *
- * Layout: Contact, Clients, then the Cut House wordmark over the description
- * — no page title, socials live in the footer.
+ * Layout: the Cut House wordmark over the description, then Contact and
+ * Clients — no page title, socials live in the footer.
  */
 export async function InfoSheet() {
   const { info, settings } = await getInfoSheetData();
@@ -38,6 +38,27 @@ export async function InfoSheet() {
 
   return (
     <div className="animate-info-text-in">
+      {info?.bio?.length || info?.readMoreUrl ? (
+        <section className="mb-8">
+          {/* The wordmark in place of a "Description" label: regular weight,
+              3pt over the other headings. */}
+          <h2 className="text-[length:calc(var(--text-body)+3pt)]">
+            {SITE_NAME}
+          </h2>
+          {info?.bio?.length ? <PortableText value={info.bio} /> : null}
+          {info?.readMoreUrl ? (
+            <a
+              href={info.readMoreUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-block text-(--color-ink-muted) transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
+            >
+              read more
+            </a>
+          ) : null}
+        </section>
+      ) : null}
+
       {settings?.email || info?.availability ? (
         <section className="mb-8">
           <h2 className="font-semibold">Contact</h2>
@@ -61,27 +82,6 @@ export async function InfoSheet() {
               <li key={name}>{name}</li>
             ))}
           </ul>
-        </section>
-      ) : null}
-
-      {info?.bio?.length || info?.readMoreUrl ? (
-        <section className="mb-8">
-          {/* The wordmark in place of a "Description" label: regular weight,
-              3pt over the other headings. */}
-          <h2 className="text-[length:calc(var(--text-body)+3pt)]">
-            {SITE_NAME}
-          </h2>
-          {info?.bio?.length ? <PortableText value={info.bio} /> : null}
-          {info?.readMoreUrl ? (
-            <a
-              href={info.readMoreUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 inline-block text-(--color-ink-muted) transition-colors duration-(--duration-fast) hover:text-(--color-ink)"
-            >
-              read more
-            </a>
-          ) : null}
         </section>
       ) : null}
 
