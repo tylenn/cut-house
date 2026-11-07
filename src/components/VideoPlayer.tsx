@@ -35,11 +35,16 @@ export function VideoPlayer({ playbackId, title, poster, aspectRatio }: Props) {
   const ratio = aspectRatio ?? 16 / 9;
 
   // A vertical film at full column width runs far taller than the screen.
-  // Cap it at 85% of the viewport height, narrowing to keep its shape;
-  // landscape films always fit and keep the full width.
+  // Cap it at 85% of the viewport height, narrowing to keep its shape, and
+  // set it against the column's right edge like the rest of the work.
+  // Landscape films always fit and keep the full width.
   const frame: React.CSSProperties =
     ratio < 1
-      ? { aspectRatio: ratio, width: `min(100%, calc(85dvh * ${ratio}))` }
+      ? {
+          aspectRatio: ratio,
+          width: `min(100%, calc(85dvh * ${ratio}))`,
+          marginLeft: "auto",
+        }
       : { aspectRatio: ratio };
 
   const style: MuxCSSProperties = {
