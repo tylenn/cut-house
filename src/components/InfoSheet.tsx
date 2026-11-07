@@ -1,5 +1,6 @@
 import { PortableText } from "@/components/PortableText";
 import { SanityImage } from "@/components/SanityImage";
+import { SITE_NAME } from "@/lib/site";
 import { getInfoSheetData } from "@/sanity/lib/info";
 
 /**
@@ -9,8 +10,8 @@ import { getInfoSheetData } from "@/sanity/lib/info";
  * cannot drift. It fetches its own data rather than taking props: both callers
  * would otherwise repeat the same two queries verbatim.
  *
- * Layout matches the client's mockup: Contact, Description,
- * Clients — no page title, socials live in the footer.
+ * Layout matches the client's mockup: Contact, the Cut House wordmark over
+ * the description, Clients — no page title, socials live in the footer.
  */
 export async function InfoSheet() {
   const { info, settings } = await getInfoSheetData();
@@ -54,7 +55,11 @@ export async function InfoSheet() {
 
       {info?.bio?.length || info?.readMoreUrl ? (
         <section className="mb-8">
-          <h2 className="font-semibold">Description</h2>
+          {/* The wordmark in place of a "Description" label: regular weight,
+              1.5pt over the other headings. */}
+          <h2 className="text-[length:calc(var(--text-body)+1.5pt)]">
+            {SITE_NAME}
+          </h2>
           {info?.bio?.length ? <PortableText value={info.bio} /> : null}
           {info?.readMoreUrl ? (
             <a
