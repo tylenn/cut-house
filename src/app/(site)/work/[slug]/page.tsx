@@ -10,7 +10,12 @@ import { SanityImage } from "@/components/SanityImage";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { client } from "@/sanity/lib/client";
 import { sanityFetch } from "@/sanity/lib/live";
-import { muxAspectRatio, muxPosterUrl, posterTimeFor } from "@/sanity/lib/mux";
+import {
+  muxAspectRatio,
+  muxPosterUrl,
+  portraitFrameWidth,
+  posterTimeFor,
+} from "@/sanity/lib/mux";
 import { PROJECT_QUERY, PROJECT_SLUGS_QUERY } from "@/sanity/lib/queries";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -61,11 +66,21 @@ export default async function ProjectPage({ params }: Props) {
 
   const playbackId = project.video?.playbackId ?? undefined;
   const aspectRatio = muxAspectRatio(project.video?.aspectRatio);
+  // A vertical film is narrowed to fit the screen; centre it, and keep the
+  // title and credits on its edges rather than the column's.
+  const portraitWidth = playbackId ? portraitFrameWidth(aspectRatio) : undefined;
 
   return (
     <>
       <JsonLd data={projectJsonLd(project, `/work/${slug}`, shareImage)} />
       <ProjectPageStagger>
+        <div
+          style={
+            portraitWidth
+              ? { width: portraitWidth, marginInline: "auto" }
+              : undefined
+          }
+        >
         {playbackId ? (
           <div>
             <VideoPlayer
@@ -160,6 +175,7 @@ export default async function ProjectPage({ params }: Props) {
           </a>
         ) : null}
       </header>
+        </div>
 
       {project.body?.length ? (
         <div className="mt-8 max-w-[62ch]">

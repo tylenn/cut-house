@@ -71,6 +71,17 @@ export function muxAspectRatio(ratio: string | null | undefined) {
   return w / h;
 }
 
+/**
+ * The width that holds a portrait film to 85% of the viewport height, so it is
+ * seen whole without scrolling. Undefined for landscape films, which always
+ * fit at full width.
+ */
+export function portraitFrameWidth(ratio: number | undefined): string | undefined {
+  return ratio !== undefined && ratio < 1
+    ? `min(100%, calc(85dvh * ${ratio}))`
+    : undefined;
+}
+
 /** Seconds -> "1:04". Mux reports fractional seconds. */
 export function formatDuration(seconds: number | null | undefined) {
   if (!seconds || seconds < 0) return undefined;
