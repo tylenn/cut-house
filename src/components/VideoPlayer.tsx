@@ -11,6 +11,7 @@ import type {
 } from "@mux/mux-player-react";
 
 import { PlayerChrome } from "@/components/player/PlayerChrome";
+import { portraitFrameWidth } from "@/sanity/lib/mux";
 
 type Props = {
   playbackId: string;
@@ -34,6 +35,13 @@ export function VideoPlayer({ playbackId, title, poster, aspectRatio }: Props) {
 
   const ratio = aspectRatio ?? 16 / 9;
 
+  // A vertical film at full column width runs far taller than the screen, so
+  // it narrows to fit; landscape films keep the full width.
+  const frame: React.CSSProperties = {
+    aspectRatio: ratio,
+    width: portraitFrameWidth(ratio),
+  };
+
   const style: MuxCSSProperties = {
     width: "100%",
     height: "100%",
@@ -47,7 +55,7 @@ export function VideoPlayer({ playbackId, title, poster, aspectRatio }: Props) {
     <div
       ref={containerRef}
       className="relative w-full overflow-hidden bg-(--color-rule)"
-      style={{ aspectRatio: ratio }}
+      style={frame}
     >
       <MuxPlayer
         ref={playerRef}
