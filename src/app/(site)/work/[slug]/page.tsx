@@ -66,8 +66,9 @@ export default async function ProjectPage({ params }: Props) {
 
   const playbackId = project.video?.playbackId ?? undefined;
   const aspectRatio = muxAspectRatio(project.video?.aspectRatio);
-  // A vertical film is narrowed to fit the screen; centre it, and keep the
-  // title and credits on its edges rather than the column's.
+  // From tablet width up, a vertical film is narrowed to fit the screen;
+  // centre it, and keep the title and credits on its edges rather than the
+  // column's. Phones keep the full width.
   const portraitWidth = playbackId ? portraitFrameWidth(aspectRatio) : undefined;
 
   return (
@@ -75,9 +76,10 @@ export default async function ProjectPage({ params }: Props) {
       <JsonLd data={projectJsonLd(project, `/work/${slug}`, shareImage)} />
       <ProjectPageStagger>
         <div
+          className={portraitWidth ? "md:mx-auto md:w-(--portrait-width)" : undefined}
           style={
             portraitWidth
-              ? { width: portraitWidth, marginInline: "auto" }
+              ? ({ "--portrait-width": portraitWidth } as React.CSSProperties)
               : undefined
           }
         >
