@@ -41,8 +41,8 @@ export async function InfoSheet() {
       {info?.bio?.length || info?.readMoreUrl ? (
         <section className="mb-8">
           {/* The wordmark in place of a "Description" label: regular weight,
-              3pt over the other headings. */}
-          <h2 className="text-[length:calc(var(--text-body)+3pt)]">
+              1.5pt over the other headings. */}
+          <h2 className="text-[length:calc(var(--text-body)+1.5pt)]">
             {SITE_NAME}
           </h2>
           {info?.bio?.length ? <PortableText value={info.bio} /> : null}
