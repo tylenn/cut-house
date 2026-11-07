@@ -21,14 +21,6 @@ export const infoPage = defineType({
       description: 'The line under the email — "Available globally."',
     }),
     defineField({
-      name: "application",
-      title: "Application",
-      type: "text",
-      rows: 3,
-      description:
-        "The short note under Application, typically about the full list being available on request.",
-    }),
-    defineField({
       name: "bio",
       title: "Description",
       type: "richText",

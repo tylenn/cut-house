@@ -82,10 +82,6 @@ export function PreviewStage() {
                   <p>Available globally.</p>
                 </section>
                 <section className="mb-8">
-                  <h2 className="font-semibold">Application</h2>
-                  <p>Full client list and commercial portfolio available upon request.</p>
-                </section>
-                <section className="mb-8">
                   <h2 className="font-semibold">Description</h2>
                   <p>
                     Tylen is a cinematographer &amp; editor who delivers creative

@@ -82,8 +82,6 @@ async function seedSingletons() {
     _type: "infoPage",
     heading: "Information",
     availability: "Available globally.",
-    application:
-      "Full client list and commercial portfolio available upon request.",
     bio: [
       {
         _type: "block",
