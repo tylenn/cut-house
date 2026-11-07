@@ -10,8 +10,8 @@ import { getInfoSheetData } from "@/sanity/lib/info";
  * cannot drift. It fetches its own data rather than taking props: both callers
  * would otherwise repeat the same two queries verbatim.
  *
- * Layout matches the client's mockup: Contact, the Cut House wordmark over
- * the description, Clients — no page title, socials live in the footer.
+ * Layout: Contact, Clients, then the Cut House wordmark over the description
+ * — no page title, socials live in the footer.
  */
 export async function InfoSheet() {
   const { info, settings } = await getInfoSheetData();
@@ -53,6 +53,17 @@ export async function InfoSheet() {
         </section>
       ) : null}
 
+      {info?.clients?.length ? (
+        <section className="mb-8">
+          <h2 className="font-semibold">Clients</h2>
+          <ul>
+            {info.clients.map((name) => (
+              <li key={name}>{name}</li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       {info?.bio?.length || info?.readMoreUrl ? (
         <section className="mb-8">
           {/* The wordmark in place of a "Description" label: regular weight,
@@ -71,17 +82,6 @@ export async function InfoSheet() {
               read more
             </a>
           ) : null}
-        </section>
-      ) : null}
-
-      {info?.clients?.length ? (
-        <section className="mb-8">
-          <h2 className="font-semibold">Clients</h2>
-          <ul>
-            {info.clients.map((name) => (
-              <li key={name}>{name}</li>
-            ))}
-          </ul>
         </section>
       ) : null}
 
