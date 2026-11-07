@@ -34,6 +34,14 @@ export function VideoPlayer({ playbackId, title, poster, aspectRatio }: Props) {
 
   const ratio = aspectRatio ?? 16 / 9;
 
+  // A vertical film at full column width runs far taller than the screen.
+  // Cap it at 85% of the viewport height, narrowing to keep its shape;
+  // landscape films always fit and keep the full width.
+  const frame: React.CSSProperties =
+    ratio < 1
+      ? { aspectRatio: ratio, width: `min(100%, calc(85dvh * ${ratio}))` }
+      : { aspectRatio: ratio };
+
   const style: MuxCSSProperties = {
     width: "100%",
     height: "100%",
@@ -47,7 +55,7 @@ export function VideoPlayer({ playbackId, title, poster, aspectRatio }: Props) {
     <div
       ref={containerRef}
       className="relative w-full overflow-hidden bg-(--color-rule)"
-      style={{ aspectRatio: ratio }}
+      style={frame}
     >
       <MuxPlayer
         ref={playerRef}
