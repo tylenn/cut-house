@@ -69,6 +69,8 @@ export const PROJECT_QUERY = defineQuery(`
     credits[] { _key, role, name, url },
     categories[]-> { _id, title, "slug": slug.current },
     externalUrl,
+    externalLabel,
+    moreLinks[] { _key, label, url },
     poster { ${IMAGE_FRAGMENT} },
     gallery[] { _key, ${IMAGE_FRAGMENT}, caption },
     video { ${VIDEO_FRAGMENT} },

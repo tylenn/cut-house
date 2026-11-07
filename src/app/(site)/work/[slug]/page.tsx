@@ -64,6 +64,17 @@ export default async function ProjectPage({ params }: Props) {
 
   const shareImage = projectShareImageUrl(project);
 
+  // The main link first, then any further cuts. Each one's text is its label,
+  // or "View the campaign" when that is left blank.
+  const links = [
+    ...(project.externalUrl
+      ? [{ key: "main", url: project.externalUrl, label: project.externalLabel }]
+      : []),
+    ...(project.moreLinks ?? []).flatMap((link) =>
+      link.url ? [{ key: link._key, url: link.url, label: link.label }] : [],
+    ),
+  ];
+
   const playbackId = project.video?.playbackId ?? undefined;
   const aspectRatio = muxAspectRatio(project.video?.aspectRatio);
   // From tablet width up, a vertical film is narrowed to fit the screen;
@@ -164,17 +175,24 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         ) : null}
 
-        {project.externalUrl ? (
-          <a
-            href={project.externalUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            // Phones match the credits' size; bold rather than underlined. On
-            // desktop it fades to grey on hover.
-            className="mt-3 inline-block text-[length:calc(var(--text-body)-2px)] font-semibold transition-colors duration-(--duration-fast) md:text-(length:--text-body) md:hover:text-(--color-ink-muted)"
-          >
-            View the campaign
-          </a>
+        {links.length ? (
+          // One link per line, so a second cut reads as a sibling of the first.
+          <ul className="mt-3">
+            {links.map((link) => (
+              <li key={link.key}>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  // Phones match the credits' size; bold rather than underlined.
+                  // On desktop it fades to grey on hover.
+                  className="inline-block text-[length:calc(var(--text-body)-2px)] font-semibold transition-colors duration-(--duration-fast) md:text-(length:--text-body) md:hover:text-(--color-ink-muted)"
+                >
+                  {link.label?.trim() || "View the campaign"}
+                </a>
+              </li>
+            ))}
+          </ul>
         ) : null}
       </header>
         </div>
