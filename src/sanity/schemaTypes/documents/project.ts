@@ -181,6 +181,51 @@ export const project = defineType({
       validation: (Rule) => Rule.uri({ scheme: ["http", "https"] }),
     }),
     defineField({
+      name: "externalLabel",
+      title: "Link label",
+      type: "string",
+      group: "details",
+      description:
+        'Optional — shown after "View the campaign", e.g. "Cut 1". Worth adding when there are more links below.',
+      hidden: ({ parent }) => !parent?.externalUrl,
+    }),
+    defineField({
+      name: "moreLinks",
+      title: "More links",
+      type: "array",
+      group: "details",
+      description:
+        "Optional — further cuts or pages. Each shows on its own line under the first link.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "projectLink",
+          fields: [
+            defineField({
+              name: "label",
+              title: "Label",
+              type: "string",
+              description: 'Shown after "View the campaign", e.g. "Cut 2".',
+            }),
+            defineField({
+              name: "url",
+              title: "Link",
+              type: "url",
+              validation: (Rule) =>
+                Rule.required().uri({ scheme: ["http", "https"] }),
+            }),
+          ],
+          preview: {
+            select: { title: "label", subtitle: "url" },
+            prepare: ({ title, subtitle }) => ({
+              title: title || "View the campaign",
+              subtitle,
+            }),
+          },
+        }),
+      ],
+    }),
+    defineField({
       name: "featured",
       title: "Feature this",
       type: "boolean",
