@@ -182,11 +182,11 @@ export const project = defineType({
     }),
     defineField({
       name: "externalLabel",
-      title: "Link label",
+      title: "Link text",
       type: "string",
       group: "details",
       description:
-        'Optional — shown after "View the campaign", e.g. "Cut 1". Worth adding when there are more links below.',
+        'Optional — what the link says, e.g. "Watch Cut 1". Left blank, it reads "View the campaign".',
       hidden: ({ parent }) => !parent?.externalUrl,
     }),
     defineField({
@@ -203,9 +203,10 @@ export const project = defineType({
           fields: [
             defineField({
               name: "label",
-              title: "Label",
+              title: "Link text",
               type: "string",
-              description: 'Shown after "View the campaign", e.g. "Cut 2".',
+              description:
+                'Optional — what the link says, e.g. "Watch Cut 2". Left blank, it reads "View the campaign".',
             }),
             defineField({
               name: "url",

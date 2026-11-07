@@ -64,7 +64,8 @@ export default async function ProjectPage({ params }: Props) {
 
   const shareImage = projectShareImageUrl(project);
 
-  // The main link first, then any further cuts, each with an optional label.
+  // The main link first, then any further cuts. Each one's text is its label,
+  // or "View the campaign" when that is left blank.
   const links = [
     ...(project.externalUrl
       ? [{ key: "main", url: project.externalUrl, label: project.externalLabel }]
@@ -187,7 +188,7 @@ export default async function ProjectPage({ params }: Props) {
                   // On desktop it fades to grey on hover.
                   className="inline-block text-[length:calc(var(--text-body)-2px)] font-semibold transition-colors duration-(--duration-fast) md:text-(length:--text-body) md:hover:text-(--color-ink-muted)"
                 >
-                  View the campaign{link.label ? `: ${link.label}` : ""}
+                  {link.label?.trim() || "View the campaign"}
                 </a>
               </li>
             ))}
